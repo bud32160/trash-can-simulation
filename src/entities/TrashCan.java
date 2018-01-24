@@ -1,30 +1,36 @@
 package entities;
 
-import enumerations.EDaySpecification;
 import enumerations.EFillLevel;
 
 public class TrashCan {
 	
 	private int trashCanNumber;
-	private EDaySpecification daySpezification;
 	private EFillLevel fillLevel;
 	private boolean sensor;
 	
+	public TrashCan()
+	{
+		
+	};
 	
+	public TrashCan(int trashCanNumber, boolean sensor) {
+		this.trashCanNumber = trashCanNumber;
+		this.sensor = sensor;
+	
+	}
+
+	public TrashCan(int trashCanNumber, EFillLevel fillLevel, boolean sensor) {
+		this.trashCanNumber = trashCanNumber;
+		this.fillLevel = fillLevel;
+		this.sensor = sensor;
+	}
+
 	public int getTrashCanNumber() {
 		return trashCanNumber;
 	}
 
 	public void setTrashCanNumber(int trashCanNumber) {
 		this.trashCanNumber = trashCanNumber;
-	}
-
-	public EDaySpecification getDaySpezification() {
-		return daySpezification;
-	}
-
-	public void setDaySpezification(EDaySpecification daySpezification) {
-		this.daySpezification = daySpezification;
 	}
 
 	public EFillLevel getFillLevel() {

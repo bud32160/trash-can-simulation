@@ -2,13 +2,13 @@ package entities;
 
 import java.util.List;
 
-import enumerations.EDaySpecification;
-
 public class Tour {
 	
 	private int tourNumber;
-	private int weekNumber;
-	private EDaySpecification daySpecification;
+	
+	//private int weekNumber;
+	//private EDaySpecification daySpecification;
+	
 	private List<TrashCan> CanList;
 	private List<TrashCan> CanWithoutSensorList;
 	private List<TrashCan> CanWithSensorList;
@@ -19,29 +19,22 @@ public class Tour {
 	private double distanceComplete;
 	private double distanceSaved;
 	
+	public Tour()
+	{
+		
+	}
 	
+	public Tour(int tourNumber, List<TrashCan> canList) {
+		this.tourNumber = tourNumber;
+		CanList = canList;
+	}
+
 	public int getTourNumber() {
 		return tourNumber;
 	}
 
 	public void setTourNumber(int tourNumber) {
 		this.tourNumber = tourNumber;
-	}
-
-	public int getWeekNumber() {
-		return weekNumber;
-	}
-
-	public void setWeekNumber(int weekNumber) {
-		this.weekNumber = weekNumber;
-	}
-
-	public EDaySpecification getDaySpecification() {
-		return daySpecification;
-	}
-
-	public void setDaySpecification(EDaySpecification daySpecification) {
-		this.daySpecification = daySpecification;
 	}
 
 	public List<TrashCan> getCanList() {

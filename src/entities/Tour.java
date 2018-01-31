@@ -25,8 +25,9 @@ public class Tour {
 		
 	}
 	
-	public Tour(InputManager manager)
+	public Tour(int tourNumber, InputManager manager)
 	{
+		this.tourNumber = tourNumber;
 		this.manager = manager;
 		createCanList();
 		assignSensors();

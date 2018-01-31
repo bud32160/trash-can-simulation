@@ -4,8 +4,8 @@ public class InputManager {
 
 	private int numberOfCans;
 	private int numberOfSensors;
-	private int emptyingTime;
-	private int singleDrivingTime;
+	private double emptyingTime;
+	private double singleDrivingTime;
 	private double singleDrivingDistance;
 	private int emptyFillLevelPercentage;
 	private int overFullFillLevelPercentage;
@@ -28,19 +28,19 @@ public class InputManager {
 		this.numberOfSensors = numberOfSensors;
 	}
 
-	public int getEmptyingTime() {
+	public double getEmptyingTime() {
 		return emptyingTime;
 	}
 	
-	public void setEmptyingTime(int emptyingTime) {
+	public void setEmptyingTime(double emptyingTime) {
 		this.emptyingTime = emptyingTime;
 	}
 	
-	public int getSingleDrivingTime() {
+	public double getSingleDrivingTime() {
 		return singleDrivingTime;
 	}
 	
-	public void setSingleDrivingTime(int singleDrivingTime) {
+	public void setSingleDrivingTime(double singleDrivingTime) {
 		this.singleDrivingTime = singleDrivingTime;
 	}
 	

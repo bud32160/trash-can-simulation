@@ -13,9 +13,10 @@ public class ResultSet {
 	private double distanceComplete;
 	private double timeSaved;
 	private double distanceSaved;
-	private int amountOfClearenceSaved;
 	private double timeWasted;
 	private double unnecessaryDistance;
+	private int amountOfClearenceComplete;
+	private int amountOfClearenceSaved;
 	private int unnecessaryCleared;
 	
 	public ResultSet()
@@ -26,18 +27,15 @@ public class ResultSet {
 	public ResultSet(Tour tour)
 	{
 		this.tour = tour;
-		createResultSet();
-	}
-	
-	private void createResultSet() {
+		
 		calculateDurationComplete();
 		calculateDistanceComplete();
 		calculateTimeSaved();
 		calculateDistanceSaved();
-		calculateAmountOfClearenceSaved();
+		calculateAmountOfClearences();
 		calculateUnnecessaryAmounts();
 	}
-
+	
 
 	private void calculateDurationComplete()
 	{
@@ -87,7 +85,8 @@ public class ResultSet {
 	}
 	
 	
-	private void calculateAmountOfClearenceSaved() {
+	private void calculateAmountOfClearences() {
+		this.amountOfClearenceComplete = tour.getCanList().size() - tour.getEmptyCansWithSensorList().size();
 		this.amountOfClearenceSaved = tour.getEmptyCansWithSensorList().size();
 	}
 
@@ -169,6 +168,14 @@ public class ResultSet {
 		this.timeWasted = timeWasted;
 	}
 
+	public int getAmountOfClearenceComplete() {
+		return amountOfClearenceComplete;
+	}
+
+	public void setAmountOfClearenceComplete(int amountOfClearenceComplete) {
+		this.amountOfClearenceComplete = amountOfClearenceComplete;
+	}
+	
 	public double getUnnecessaryDistance() {
 		return unnecessaryDistance;
 	}
@@ -184,5 +191,5 @@ public class ResultSet {
 	public void setUnnecessaryCleared(int unnecessaryCleared) {
 		this.unnecessaryCleared = unnecessaryCleared;
 	}
-	
+
 }

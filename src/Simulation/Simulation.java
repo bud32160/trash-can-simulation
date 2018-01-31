@@ -1,10 +1,7 @@
 package Simulation;
 
-import java.util.ArrayList;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Scanner;
-import java.util.concurrent.ThreadLocalRandom;
 
 import entities.InputManager;
 import entities.Tour;
@@ -15,7 +12,6 @@ public class Simulation {
 
 	static Scanner scanner = new Scanner(System.in);
 	static InputManager manager = new InputManager();
-	static List<Tour> tourList = new ArrayList<Tour>();
 	static Tour tour = new Tour();
 	static ResultSet resultSet = new ResultSet();
 	
@@ -23,20 +19,41 @@ public class Simulation {
 		
 		//Input Data
 		manager = readInput();
-		
+		//Create Tour
 		tour = createTour(manager);
-		simulateTour(tour, manager);
-		
-		//simulation(tourList);
+		//Simulate tour
+		resultSet = simulateTour(tour);
 		
 		printTour(tour);
+		printResultSet(resultSet);
+		
 		
 		System.out.println("Fertig");
-		
-
 	}
-
-
+	
+	
+	private static InputManager readInput() {
+		InputManager manager = new InputManager();
+		System.out.println("Anzahl Tonnen gesamt");
+		manager.setNumberOfCans(scanner.nextInt());
+		System.out.println("Anzahl Tonnen mit Sensor");
+		manager.setNumberOfSensors(scanner.nextInt());
+		System.out.println("Prozentualer Anteil leerer Tonnen in Prozent");
+		manager.setEmptyFillLevelPercentage(scanner.nextInt());
+		System.out.println("Prozentualer Anteil übervoller Tonnen in Prozent");
+		manager.setOverFullFillLevelPercentage(scanner.nextInt());
+		System.out.println("Leerzeit pro Tonne in Sekunden");
+		manager.setEmptyingTime(scanner.nextDouble());
+		System.out.println("Anfahrtszeit pro Tonne in Sekunden");
+		manager.setSingleDrivingTime(scanner.nextDouble());
+		System.out.println("Anfahrtsweg pro Tonne in Meter");
+		manager.setSingleDrivingDistance(scanner.nextDouble());
+		
+		return manager;
+	}
+	
+	
+	//print functions
 	private static void printTour(Tour tour) {
 		// TODO Auto-generated method stub
 		
@@ -63,70 +80,45 @@ public class Simulation {
 		}
 		
 	}
-
-
-	private static InputManager readInput() {
-		InputManager manager = new InputManager();
-		System.out.println("Anzahl Tonnen gesamt:");
-		manager.setNumberOfCans(scanner.nextInt());
-		System.out.println("Anzahl Tonnen mit Sensor");
-		manager.setNumberOfSensors(scanner.nextInt());
-		System.out.println("Prozentualer Anteil leerer Tonnen in Prozent");
-		manager.setEmptyFillLevelPercentage(scanner.nextInt());
-		System.out.println("Prozentualer Anteil übervoller Tonnen in Prozent");
-		manager.setOverFullFillLevelPercentage(scanner.nextInt());
-		/*
-		System.out.println("Leerzeit pro Tonne");
-		manager.setEmptyingTime(scanner.nextInt());
-		System.out.println("Anfahrtszeit pro Tonne");
-		manager.setSingleDrivingTime(scanner.nextInt());
-		*/
-		/*
-		if(manager.getSensorIntelligencePercentage() > 0)
-			manager.setSensorIntelligence(true);
-		/*
-		 * 	System.out.println("Prozentualer Anteil leerer Tonnen mit Sensor (intelligent) in Prozent");
-			manager.setSensorIntelligencePercentage(scanner.nextInt());
-			System.out.println("Leerzeit pro Tonne");
-			manager.setEmptyingTime(scanner.nextInt());
-			System.out.println("Anfahrtszeit pro Tonne");
-			manager.setSingleDrivingTime(scanner.nextInt());
-		 */
-
+	
+	private static void printResultSet(ResultSet resultSet) {
+		System.out.println("-----------------Result Set-----------------------\n");
+		System.out.println("Anzahl Tonnen gesamt: " + resultSet.getTour().getManager().getNumberOfCans() + "  --  Anzahl Sensoren: " + resultSet.getTour().getManager().getNumberOfSensors());
+		System.out.println("\n--------------------------------------------------\n");
+		System.out.println("Geleerte Tonnen gesamt: " + resultSet.getAmountOfClearenceComplete() + " Stück");
+		System.out.println("Zeit gesamt: " + resultSet.getDurationComplete() + " Sekunden");
+		System.out.println("Strecke gesamt: " + resultSet.getDistanceComplete() + " Meter");
+		System.out.println("\n--------------------------------------------------\n");
+		System.out.println("Eingesparte Tonnen: " + resultSet.getAmountOfClearenceSaved() + " Stück");
+		System.out.println("Eingesparte Zeit: " + resultSet.getTimeSaved() + " Sekunden");
+		System.out.println("Eingesparte Strecke: " + resultSet.getDistanceSaved() + " Meter");
+		System.out.println("\n--------------------------------------------------\n");
+		System.out.println("Unnötig geleerte Tonnen: " + resultSet.getUnnecessaryCleared() + " Stück");
+		System.out.println("Verschwendete Zeit: " + resultSet.getTimeWasted() + " Sekunden");
+		System.out.println("Unnötig gefahrene Strecke: " + resultSet.getUnnecessaryDistance() + " Meter");
 		
-		return manager;
 	}
-	
 
 	
-
-
-
-
-
+	
+	
 	private static Tour createTour(InputManager manager) {
-		Tour tour = new Tour();
-		
-		//Create list of all cans
-		tour.setCanList(createTrashCanList(manager.getNumberOfCans()));
-		//Assign sensor to cans
-		assignSensors(tour.getCanList(), manager.getNumberOfSensors());
-		
-		//Assig random fillLevels
-		assignRandomFillLevels(tour.getCanList(), manager);
-				
-		//Create different lists depending on sensor for tour
-		fillTourLists(tour);
-		
+		Tour tour = new Tour(1, manager);
 		return tour;
 	}
 	
 
 
-	private static void simulateTour(Tour tour, InputManager manager) {
-		
+	private static ResultSet simulateTour(Tour tour) {
+		ResultSet resultSet = new ResultSet(tour);
+		return resultSet;
 	}
 
+	
+	
+	
+	
+	
 	/*
 	private static void fillIntelligentFillLevelList(InputManager manager, List<TrashCan> canList, int countOfEmptyCans) {
 		EFillLevel fullLevel = EFillLevel.FULL;

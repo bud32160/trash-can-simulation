@@ -97,49 +97,36 @@ public class Simulation {
 		return manager;
 	}
 	
-	private static void fillNormalFillLevelList(InputManager manager, List<TrashCan> canList, int countOfEmptyCans, int countOfOverFullCans) {
-		EFillLevel overFullLevel = EFillLevel.OVERFULL;
-		EFillLevel fullLevel = EFillLevel.FULL;
-		EFillLevel emptyLevel = EFillLevel.EMPTY;
-		int helpCounter, index;
+
+	
+
+
+
+
+
+	private static Tour createTour(InputManager manager) {
+		Tour tour = new Tour();
 		
-		//Set all levels to FULL
-		for(int i = 0; i < manager.getNumberOfCans(); i++)
-		{
-			canList.get(i).setFillLevel(fullLevel);
-		}
+		//Create list of all cans
+		tour.setCanList(createTrashCanList(manager.getNumberOfCans()));
+		//Assign sensor to cans
+		assignSensors(tour.getCanList(), manager.getNumberOfSensors());
 		
-		helpCounter = countOfEmptyCans;
-		//Set random levels to empty depending on countOfEmptyCans
-		while(helpCounter > 0)
-		{
-			//Get random Element
-			index = ThreadLocalRandom.current().nextInt(manager.getNumberOfCans());
-			//Check if Level is FULL
-			if(canList.get(index).getFillLevel() == fullLevel)
-			{
-				//Set to empty
-				canList.get(index).setFillLevel(emptyLevel);
-				helpCounter--;
-			}
-		}
+		//Assig random fillLevels
+		assignRandomFillLevels(tour.getCanList(), manager);
+				
+		//Create different lists depending on sensor for tour
+		fillTourLists(tour);
 		
-		helpCounter = countOfOverFullCans;
-		//Set random levels to overFull depending on countOfOverFullCans
-		while(helpCounter > 0)
-		{
-			//Get random Element
-			index = ThreadLocalRandom.current().nextInt(manager.getNumberOfCans());
-			//Check if Level is FULL
-			if(canList.get(index).getFillLevel() == fullLevel)
-			{
-				//Set to overFull
-				canList.get(index).setFillLevel(overFullLevel);
-				helpCounter--;
-			}
-		}
+		return tour;
 	}
 	
+
+
+	private static void simulateTour(Tour tour, InputManager manager) {
+		
+	}
+
 	/*
 	private static void fillIntelligentFillLevelList(InputManager manager, List<TrashCan> canList, int countOfEmptyCans) {
 		EFillLevel fullLevel = EFillLevel.FULL;
@@ -186,150 +173,5 @@ public class Simulation {
 		}
 	}
 	*/
-
-	//Assign random fillLevels depending on input parameter
-	private static void assignRandomFillLevels(List<TrashCan> canList, InputManager manager) {
-		int countOfEmptyCans, countOfOverFullCans;
-		
-		countOfEmptyCans = calculateCounterOfCans(manager.getNumberOfCans(), manager.getEmptyFillLevelPercentage());
-		countOfOverFullCans = calculateCounterOfCans(manager.getNumberOfCans(), manager.getOverFullFillLevelPercentage());
-		
-		/*
-		if(manager.isSensorIntelligence())
-		{
-			fillIntelligentFillLevelList(manager, canList, countOfEmptyCans);
-		}
-		else
-		{
-			fillNormalFillLevelList(manager, canList, countOfEmptyCans);
-		}
-		*/
-		
-		fillNormalFillLevelList(manager, canList, countOfEmptyCans, countOfOverFullCans);
-	}
-
-	private static int calculateCounterOfCans(int size, int emptyFillLevelPercentage) {
-		int result;
-		double calculator;
-		
-		//Round result algorithm
-		calculator = (double) size * ((double) emptyFillLevelPercentage / 100);
-				
-		result = (int) (Math.round(calculator));
-		
-		return result;
-	}
-
-
-	//Fill List with amount of trash cans
-	private static List<TrashCan> createTrashCanList(int size) {
-		int i = 1;
-		List<TrashCan> trashCanList = new ArrayList<TrashCan>();
-		
-		while(i <= size)
-		{
-			TrashCan can = new TrashCan(i, false);
-			trashCanList.add(can);
-			i++;
-		};
-		
-		return trashCanList;
-	}
-	
-	//Assign sensors to cans in trashCanList
-	private static void assignSensors(List<TrashCan> canList, int count) {
-		int index;
-		while(count > 0)
-		{
-			//Get random Element
-			index = ThreadLocalRandom.current().nextInt(manager.getNumberOfCans());
-			//Check if Level is FULL
-			if(canList.get(index).isSensor() == false)
-			{
-				//Set to overFull
-				canList.get(index).setSensor(true);
-				count--;
-			}
-		}
-	}
-	
-	//Asign cans without sensor to list
-	private static List<TrashCan> createListOfCansWithoutSensor(List<TrashCan> canList) {
-		List<TrashCan> listOfCansWithoutSensor = new ArrayList<TrashCan>();
-		Iterator<TrashCan> iterator = canList.iterator();
-		TrashCan can = new TrashCan();
-		
-		while (iterator.hasNext()) {
-			can = iterator.next();
-			if(can.isSensor() == false)
-				listOfCansWithoutSensor.add(can);
-		}
-
-		return listOfCansWithoutSensor;
-	}
-	
-	//Asign cans with sensor to list
-	private static List<TrashCan> createListOfCansWithSensor(List<TrashCan> canList) {
-		List<TrashCan> listOfCansWithSensor = new ArrayList<TrashCan>();
-		Iterator<TrashCan> iterator = canList.iterator();
-		TrashCan can = new TrashCan();
-		
-		while (iterator.hasNext()) {
-			can = iterator.next();
-			if(can.isSensor())
-				listOfCansWithSensor.add(can);
-		}
-
-		return listOfCansWithSensor;
-	}
-	
-	private static List<TrashCan> createListOfEmptyCansWithSensor(List<TrashCan> canList) {
-		List<TrashCan> listOfEmptyCansWithSensor = new ArrayList<TrashCan>();
-		Iterator<TrashCan> iterator = canList.iterator();
-		TrashCan can = new TrashCan();
-		EFillLevel emptyLevel = EFillLevel.EMPTY;
-		
-		while (iterator.hasNext()) {
-			can = iterator.next();
-			if(can.isSensor())
-			{
-				if(can.getFillLevel() == emptyLevel)
-					listOfEmptyCansWithSensor.add(can);
-			}
-		}
-
-		return listOfEmptyCansWithSensor;
-	}
-	
-	private static void fillTourLists(Tour tour) {
-		tour.setCanWithoutSensorList(createListOfCansWithoutSensor(tour.getCanList()));
-		tour.setCanWithSensorList(createListOfCansWithSensor(tour.getCanList()));
-		tour.setEmptyIgnoredCansList(createListOfEmptyCansWithSensor(tour.getCanList()));
-	}
-
-
-	private static Tour createTour(InputManager manager) {
-		Tour tour = new Tour();
-		
-		//Create list of all cans
-		tour.setCanList(createTrashCanList(manager.getNumberOfCans()));
-		//Assign sensor to cans
-		assignSensors(tour.getCanList(), manager.getNumberOfSensors());
-		
-		//Assig random fillLevels
-		assignRandomFillLevels(tour.getCanList(), manager);
-				
-		//Create different lists depending on sensor for tour
-		fillTourLists(tour);
-		
-		return tour;
-	}
-	
-
-
-	private static void simulateTour(Tour tour, InputManager manager) {
-		
-	}
-
 
 }

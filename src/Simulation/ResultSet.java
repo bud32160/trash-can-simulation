@@ -48,7 +48,7 @@ public class ResultSet {
 		durationComplete = tour.getCanList().size() * (tour.getManager().getEmptyingTime() + tour.getManager().getSingleDrivingTime());
 		
 		//Calculate time for empty cans with sensor
-		durationSaved = tour.getEmptyIgnoredCansList().size() * (tour.getManager().getEmptyingTime() + tour.getManager().getSingleDrivingTime());
+		durationSaved = tour.getEmptyCansWithSensorList().size() * (tour.getManager().getEmptyingTime() + tour.getManager().getSingleDrivingTime());
 		
 		this.durationComplete = (durationComplete - durationSaved);
 	}
@@ -63,7 +63,7 @@ public class ResultSet {
 		
 		
 		//Calculate distance for empty cans with sensor
-		distanceSaved = tour.getEmptyIgnoredCansList().size() * tour.getManager().getSingleDrivingDistance();
+		distanceSaved = tour.getEmptyCansWithSensorList().size() * tour.getManager().getSingleDrivingDistance();
 		
 		this.distanceComplete = (distanceComplete - distanceSaved);
 	}
@@ -72,7 +72,7 @@ public class ResultSet {
 	{
 		double timeSaved = 0;
 		
-		timeSaved = tour.getEmptyIgnoredCansList().size() * (tour.getManager().getEmptyingTime() + tour.getManager().getSingleDrivingTime());
+		timeSaved = tour.getEmptyCansWithSensorList().size() * (tour.getManager().getEmptyingTime() + tour.getManager().getSingleDrivingTime());
 		
 		this.timeSaved = timeSaved;
 	}
@@ -81,14 +81,14 @@ public class ResultSet {
 	{
 		double distanceSaved = 0;
 		
-		distanceSaved = tour.getEmptyIgnoredCansList().size() * tour.getManager().getSingleDrivingDistance();
+		distanceSaved = tour.getEmptyCansWithSensorList().size() * tour.getManager().getSingleDrivingDistance();
 		
 		this.distanceSaved = distanceSaved;
 	}
 	
 	
 	private void calculateAmountOfClearenceSaved() {
-		this.amountOfClearenceSaved = tour.getEmptyIgnoredCansList().size();
+		this.amountOfClearenceSaved = tour.getEmptyCansWithSensorList().size();
 	}
 
 	private void calculateUnnecessaryAmounts() {

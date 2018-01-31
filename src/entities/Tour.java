@@ -2,6 +2,8 @@ package entities;
 
 import java.util.List;
 
+import Simulation.ResultSet;
+
 public class Tour {
 	
 	private int tourNumber;
@@ -12,13 +14,20 @@ public class Tour {
 	private List<TrashCan> CanWithoutSensorList;
 	private List<TrashCan> CanWithSensorList;
 	private List<TrashCan> EmptyIgnoredCansList;
+	private ResultSet resultSet;
 
 	public Tour()
 	{
 		
 	}
 	
-	public Tour(int tourNumber, List<TrashCan> canList) {
+	public Tour(InputManager manager)
+	{
+		this.manager = manager;
+	}
+	
+	public Tour(int tourNumber, List<TrashCan> canList) 
+	{
 		this.tourNumber = tourNumber;
 		CanList = canList;
 	}
@@ -71,6 +80,14 @@ public class Tour {
 	
 	public void setEmptyIgnoredCansList(List<TrashCan> emptyIgnoredCansList) {
 		EmptyIgnoredCansList = emptyIgnoredCansList;
+	}
+
+	public ResultSet getResultSet() {
+		return resultSet;
+	}
+
+	public void setResultSet(ResultSet resultSet) {
+		this.resultSet = resultSet;
 	}
 
 }

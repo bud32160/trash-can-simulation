@@ -26,7 +26,6 @@ public class Simulation {
 		
 		tour = createTour(manager);
 		simulateTour(tour, manager);
-		resultSet = createResultSet(tour);
 		
 		//simulation(tourList);
 		
@@ -326,46 +325,10 @@ public class Simulation {
 		return tour;
 	}
 	
-	private static double calculateDurationComplete(Tour tour, InputManager manager)
-	{
-		double durationComplete = 0;
-		double durationSaved = 0;
-		
-		//Calculate time for all cans
-		durationComplete = tour.getCanList().size() * (manager.getEmptyingTime() + manager.getSingleDrivingTime());
-		
-		//Calculate time for empty cans with sensor
-		durationSaved = tour.getEmptyIgnoredCansList().size() * (manager.getEmptyingTime() + manager.getSingleDrivingTime());
-		
-		return (durationComplete - durationSaved);
-	}
-	
-	private static double calculateDistanceComplete(Tour tour, InputManager manager)
-	{
-		double distanceComplete = 0;
-		double distanceSaved = 0;
-		
-		//Calculate time for all cans
-		distanceComplete = (tour.getCanList().size() * manager.getSingleDrivingDistance());
-		
-		
-		//Calculate time for empty cans with sensor
-		distanceSaved = tour.getEmptyIgnoredCansList().size() * manager.getSingleDrivingDistance();
-		
-		return (distanceComplete - distanceSaved);
-	}
+
 
 	private static void simulateTour(Tour tour, InputManager manager) {
 		
-		tour.setDurationComplete(calculateDurationComplete(tour, manager));
-		tour.setDistanceComplete(calculateDistanceComplete(tour, manager));
-		
-	}
-
-	private static ResultSet createResultSet(Tour tour) {
-		ResultSet resultSet = new ResultSet();
-		
-		return resultSet;
 	}
 
 

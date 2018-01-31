@@ -1,7 +1,10 @@
 package Simulation;
 
-import entities.InputManager;
+import java.util.Iterator;
+
 import entities.Tour;
+import entities.TrashCan;
+import enumerations.EFillLevel;
 
 public class ResultSet {
 	
@@ -15,6 +18,11 @@ public class ResultSet {
 	private double unnecessaryDistance;
 	private int unnecessaryCleared;
 	
+	public ResultSet()
+	{
+		
+	}
+	
 	public ResultSet(Tour tour)
 	{
 		this.tour = tour;
@@ -24,8 +32,13 @@ public class ResultSet {
 	private void createResultSet() {
 		calculateDurationComplete();
 		calculateDistanceComplete();
+		calculateTimeSaved();
+		calculateDistanceSaved();
+		calculateAmountOfClearenceSaved();
+		calculateUnnecessaryAmounts();
 	}
-	
+
+
 	private void calculateDurationComplete()
 	{
 		double durationComplete = 0;
@@ -54,7 +67,53 @@ public class ResultSet {
 		
 		this.distanceComplete = (distanceComplete - distanceSaved);
 	}
+	
+	public void calculateTimeSaved()
+	{
+		double timeSaved = 0;
+		
+		timeSaved = tour.getEmptyIgnoredCansList().size() * (tour.getManager().getEmptyingTime() + tour.getManager().getSingleDrivingTime());
+		
+		this.timeSaved = timeSaved;
+	}
 
+	public void calculateDistanceSaved()
+	{
+		double distanceSaved = 0;
+		
+		distanceSaved = tour.getEmptyIgnoredCansList().size() * tour.getManager().getSingleDrivingDistance();
+		
+		this.distanceSaved = distanceSaved;
+	}
+	
+	
+	private void calculateAmountOfClearenceSaved() {
+		this.amountOfClearenceSaved = tour.getEmptyIgnoredCansList().size();
+	}
+
+	private void calculateUnnecessaryAmounts() {
+		Iterator<TrashCan> iterator = tour.getCanWithoutSensorList().iterator();
+		EFillLevel emptyLevel = EFillLevel.EMPTY;
+		int unnecessaryCleared = 0;
+		double timeWasted = 0;
+		double unnecessaryDistance = 0;
+		
+		while(iterator.hasNext())
+		{
+			if(iterator.next().getFillLevel() == emptyLevel)
+				unnecessaryCleared++;
+		}
+		
+		timeWasted = unnecessaryCleared * (tour.getManager().getEmptyingTime() + tour.getManager().getSingleDrivingTime());
+		unnecessaryDistance = unnecessaryCleared * tour.getManager().getSingleDrivingDistance();
+		
+		this.unnecessaryCleared = unnecessaryCleared;
+		this.timeWasted = timeWasted;
+		this.unnecessaryDistance = unnecessaryDistance;
+	}
+	
+	
+	//Getters and Setters
 	public Tour getTour() {
 		return tour;
 	}

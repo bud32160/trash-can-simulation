@@ -15,12 +15,26 @@ public class Simulation {
 	
 	public static void main(String[] args) {
 		
+		/*
+		 * First test dummy for a single simulation reading input from commandline
+		 * 
+		 * Missing: 
+		 * - exception handling
+		 * - input controller
+		 * - gui for usecases
+		 * - usable result display
+		 * 
+		 * Next step: 
+		 * - introduce gps data to trashCans for visualizing in googlemap
+		 */
+		
 		//Input Data
 		manager.readInput();
 		//Create Tour
 		tour = createTour(manager);
 		//Simulate tour
 		resultSet = simulateTour(tour);
+		//Print results
 		printTour(tour);
 		resultSet.printResultSet();
 		
@@ -68,6 +82,9 @@ public class Simulation {
 
 	
 	/*
+	 * Functin for intelligent sensoring depending on input parameter
+	 * 
+	 * 
 	private static void fillIntelligentFillLevelList(InputManager manager, List<TrashCan> canList, int countOfEmptyCans) {
 		EFillLevel fullLevel = EFillLevel.FULL;
 		EFillLevel emptyLevel = EFillLevel.EMPTY;

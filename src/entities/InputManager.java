@@ -1,5 +1,7 @@
 package entities;
 
+import java.util.Scanner;
+
 public class InputManager {
 
 	private int numberOfCans;
@@ -12,6 +14,28 @@ public class InputManager {
 	private int sensorIntelligencePercentage;
 	private boolean sensorIntelligence;
 	
+	
+	public void readInput() {
+		Scanner scanner = new Scanner(System.in);
+		System.out.println("Anzahl Tonnen gesamt");
+		setNumberOfCans(scanner.nextInt());
+		System.out.println("Anzahl Tonnen mit Sensor");
+		setNumberOfSensors(scanner.nextInt());
+		System.out.println("Prozentualer Anteil leerer Tonnen in Prozent");
+		setEmptyFillLevelPercentage(scanner.nextInt());
+		System.out.println("Prozentualer Anteil übervoller Tonnen in Prozent");
+		setOverFullFillLevelPercentage(scanner.nextInt());
+		System.out.println("Leerzeit pro Tonne in Sekunden");
+		setEmptyingTime(scanner.nextDouble());
+		System.out.println("Anfahrtszeit pro Tonne in Sekunden");
+		setSingleDrivingTime(scanner.nextDouble());
+		System.out.println("Anfahrtsweg pro Tonne in Meter");
+		setSingleDrivingDistance(scanner.nextDouble());
+		scanner.close();
+	}
+	
+	
+	//Getters and Setters
 	public int getNumberOfCans() {
 		return numberOfCans;
 	}

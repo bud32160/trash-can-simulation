@@ -7,6 +7,7 @@ public class TrashCan {
 	private int trashCanNumber;
 	private EFillLevel fillLevel;
 	private boolean sensor;
+	//GPSData gpsData;
 	
 	public TrashCan()
 	{

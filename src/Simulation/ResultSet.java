@@ -27,7 +27,6 @@ public class ResultSet {
 	public ResultSet(Tour tour)
 	{
 		this.tour = tour;
-		
 		calculateDurationComplete();
 		calculateDistanceComplete();
 		calculateTimeSaved();
@@ -66,7 +65,7 @@ public class ResultSet {
 		this.distanceComplete = (distanceComplete - distanceSaved);
 	}
 	
-	public void calculateTimeSaved()
+	private void calculateTimeSaved()
 	{
 		double timeSaved = 0;
 		
@@ -75,7 +74,7 @@ public class ResultSet {
 		this.timeSaved = timeSaved;
 	}
 
-	public void calculateDistanceSaved()
+	private void calculateDistanceSaved()
 	{
 		double distanceSaved = 0;
 		
@@ -111,6 +110,22 @@ public class ResultSet {
 		this.unnecessaryDistance = unnecessaryDistance;
 	}
 	
+	public void printResultSet() {
+		System.out.println("-----------------Result Set-----------------------\n");
+		System.out.println("Anzahl Tonnen gesamt: " + getTour().getManager().getNumberOfCans() + "  --  Anzahl Sensoren: " + getTour().getManager().getNumberOfSensors());
+		System.out.println("\n--------------------------------------------------\n");
+		System.out.println("Geleerte Tonnen gesamt: " + getAmountOfClearenceComplete() + " Stück");
+		System.out.println("Zeit gesamt: " + getDurationComplete() + " Sekunden");
+		System.out.println("Strecke gesamt: " + getDistanceComplete() + " Meter");
+		System.out.println("\n--------------------------------------------------\n");
+		System.out.println("Eingesparte Tonnen: " + getAmountOfClearenceSaved() + " Stück");
+		System.out.println("Eingesparte Zeit: " + getTimeSaved() + " Sekunden");
+		System.out.println("Eingesparte Strecke: " + getDistanceSaved() + " Meter");
+		System.out.println("\n--------------------------------------------------\n");
+		System.out.println("Unnötig geleerte Tonnen: " + getUnnecessaryCleared() + " Stück");
+		System.out.println("Verschwendete Zeit: " + getTimeWasted() + " Sekunden");
+		System.out.println("Unnötig gefahrene Strecke: " + getUnnecessaryDistance() + " Meter");
+	}
 	
 	//Getters and Setters
 	public Tour getTour() {

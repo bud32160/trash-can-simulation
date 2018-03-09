@@ -2,13 +2,10 @@ package simulation;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.util.Iterator;
 
 import input.InputManager;
 import output.ResultSet;
 import entities.Tour;
-import entities.TrashCan;
-import enumerations.EFillLevel;
 
 public class Simulation {
 

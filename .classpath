@@ -2,5 +2,14 @@
 <classpath>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.8"/>
 	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="lib" path="D:/Studium-Wohnung/Bachelorarbeit/Simulation/TimeSimulation/jar/commons-collections4-4.1.jar"/>
+	<classpathentry kind="lib" path="D:/Studium-Wohnung/Bachelorarbeit/Simulation/TimeSimulation/jar/dom4j-1.6.1.jar"/>
+	<classpathentry kind="lib" path="D:/Studium-Wohnung/Bachelorarbeit/Simulation/TimeSimulation/jar/poi-3.17.jar"/>
+	<classpathentry kind="lib" path="D:/Studium-Wohnung/Bachelorarbeit/Simulation/TimeSimulation/jar/poi-examples-3.17.jar"/>
+	<classpathentry kind="lib" path="D:/Studium-Wohnung/Bachelorarbeit/Simulation/TimeSimulation/jar/poi-excelant-3.17.jar"/>
+	<classpathentry kind="lib" path="D:/Studium-Wohnung/Bachelorarbeit/Simulation/TimeSimulation/jar/poi-ooxml-3.17.jar"/>
+	<classpathentry kind="lib" path="D:/Studium-Wohnung/Bachelorarbeit/Simulation/TimeSimulation/jar/poi-ooxml-schemas-3.17.jar"/>
+	<classpathentry kind="lib" path="D:/Studium-Wohnung/Bachelorarbeit/Simulation/TimeSimulation/jar/poi-scratchpad-3.17.jar"/>
+	<classpathentry kind="lib" path="D:/Studium-Wohnung/Bachelorarbeit/Simulation/TimeSimulation/jar/xmlbeans-2.3.0.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

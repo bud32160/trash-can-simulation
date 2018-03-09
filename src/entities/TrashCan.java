@@ -1,37 +1,65 @@
 package entities;
 
+import enumerations.EDaySpecification;
 import enumerations.EFillLevel;
+import enumerations.EPublicStatus;
 
 public class TrashCan {
 	
-	private int trashCanNumber;
+	private String canNumber;
+	private String address;
+	private EPublicStatus publicStatus;
 	private EFillLevel fillLevel;
 	private boolean sensor;
-	//GPSData gpsData;
+	private GpsData gpsData;
+	private EDaySpecification daySpecification;
 	
 	public TrashCan()
 	{
 		
 	};
 	
-	public TrashCan(int trashCanNumber, boolean sensor) {
-		this.trashCanNumber = trashCanNumber;
+	public TrashCan(String canNumber, boolean sensor) {
+		this.canNumber = canNumber;
 		this.sensor = sensor;
 	
 	}
+	
+	public TrashCan(String canNumber, boolean sensor, GpsData gpsData) {
+		this.canNumber = canNumber;
+		this.sensor = sensor;
+		this.gpsData = gpsData;
+	
+	}
 
-	public TrashCan(int trashCanNumber, EFillLevel fillLevel, boolean sensor) {
-		this.trashCanNumber = trashCanNumber;
+	public TrashCan(String canNumber, EFillLevel fillLevel, boolean sensor) {
+		this.canNumber = canNumber;
 		this.fillLevel = fillLevel;
 		this.sensor = sensor;
 	}
 
-	public int getTrashCanNumber() {
-		return trashCanNumber;
+	public String getCanNumber() {
+		return canNumber;
 	}
 
-	public void setTrashCanNumber(int trashCanNumber) {
-		this.trashCanNumber = trashCanNumber;
+	public void setCanNumber(String canNumber) {
+		this.canNumber = canNumber;
+	}
+
+	public String getAddress() {
+		return address;
+	}
+
+	public void setAddress(String address) {
+		this.address = address;
+	}
+
+	public EPublicStatus getPublicStatus() {
+		return publicStatus;
+	}
+
+	public void setPublicStatus(EPublicStatus publicStatus) {
+		this.publicStatus = publicStatus;
 	}
 
 	public EFillLevel getFillLevel() {
@@ -48,6 +76,22 @@ public class TrashCan {
 	
 	public void setSensor(boolean sensor) {
 		this.sensor = sensor;
+	}
+
+	public GpsData getGpsData() {
+		return gpsData;
+	}
+
+	public void setGpsData(GpsData gpsData) {
+		this.gpsData = gpsData;
+	}
+
+	public EDaySpecification getDaySpecification() {
+		return daySpecification;
+	}
+
+	public void setDaySpecification(EDaySpecification daySpecification) {
+		this.daySpecification = daySpecification;
 	}
 	
 }

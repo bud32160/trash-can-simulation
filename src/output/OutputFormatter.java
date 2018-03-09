@@ -15,17 +15,8 @@ import enumerations.EFillLevel;
 
 public class OutputFormatter {
 	
-	private ResultSet resultSet;
-	private XSSFWorkbook workbook;
-	
-
 	public OutputFormatter() {
 	
-	}
-	
-	public OutputFormatter(ResultSet resultSet, XSSFWorkbook workbook) {
-		this.resultSet = resultSet;
-		this.workbook = workbook;
 	}
 	
 	public void setCollumnWidt(XSSFSheet sheet) {
@@ -53,6 +44,8 @@ public class OutputFormatter {
 		XSSFFont tableFont = createStandardFont(workbook);
 		gpsDataCellStyle.setFont(tableFont);
 		setStandardCellStyleAlignments(workbook, gpsDataCellStyle);
+		
+		// TODO find solution for GPS format with ##.#####
 		gpsDataCellStyle.setDataFormat(HSSFDataFormat.getBuiltinFormat("##.#####"));
 		
 		return gpsDataCellStyle;
@@ -109,6 +102,41 @@ public class OutputFormatter {
 		return tableFont;
 	}
 	
+	public XSSFCellStyle createMenueFont(XSSFWorkbook wb) {
+		XSSFCellStyle styleMenueBar = wb.createCellStyle();
+		XSSFFont menueFont = wb.createFont();
+		menueFont.setBold(true);
+		menueFont.setFontName(XSSFFont.DEFAULT_FONT_NAME);
+		menueFont.setFontHeightInPoints((short) 11);
+		styleMenueBar.setFont(menueFont);
+		styleMenueBar.setVerticalAlignment(VerticalAlignment.CENTER);
+		
+		return styleMenueBar;
+	}
+	
+	public XSSFCellStyle createTableFontWithSensor(XSSFWorkbook wb) {
+		XSSFCellStyle styleTable = wb.createCellStyle();
+		XSSFFont tableFont = wb.createFont();
+		tableFont.setFontName(XSSFFont.DEFAULT_FONT_NAME);
+		tableFont.setFontHeightInPoints((short) 11);
+		styleTable.setFont(tableFont);
+		styleTable.setVerticalAlignment(VerticalAlignment.CENTER);
+		
+		return styleTable;
+	}
+	
+	public XSSFCellStyle createTableFontWithoutSensor(XSSFWorkbook wb) {
+		XSSFCellStyle styleTable = wb.createCellStyle();
+		XSSFFont tableFont = wb.createFont();
+		tableFont.setBold(true);
+		tableFont.setFontName(XSSFFont.DEFAULT_FONT_NAME);
+		tableFont.setFontHeightInPoints((short) 11);
+		styleTable.setFont(tableFont);
+		styleTable.setVerticalAlignment(VerticalAlignment.CENTER);
+		
+		return styleTable;
+	}
+	
 	public void setStandardCellStyleAlignments(XSSFWorkbook workbook, XSSFCellStyle cellStyle) {
 		XSSFColor backGroundColor = new XSSFColor(new java.awt.Color(234, 234, 234));
 		cellStyle.setVerticalAlignment(VerticalAlignment.CENTER);
@@ -121,21 +149,4 @@ public class OutputFormatter {
 		cellStyle.setBorderLeft(BorderStyle.THIN);
 	}
 
-	// Getters and Setters
-	public ResultSet getResultSet() {
-		return resultSet;
-	}
-
-	public void setResultSet(ResultSet resultSet) {
-		this.resultSet = resultSet;
-	}
-
-	public XSSFWorkbook getWorkbook() {
-		return workbook;
-	}
-
-	public void setWorkbook(XSSFWorkbook workbook) {
-		this.workbook = workbook;
-	}
-	
 }

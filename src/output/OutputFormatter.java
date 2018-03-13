@@ -19,7 +19,7 @@ public class OutputFormatter {
 	
 	}
 	
-	public void setCollumnWidt(XSSFSheet sheet) {
+	public void setCollumnWidthTourTable(XSSFSheet sheet) {
 		sheet.setColumnWidth(0, 10*256);
 		sheet.setColumnWidth(1, 15*256);
 		sheet.setColumnWidth(2, 35*256);
@@ -28,6 +28,19 @@ public class OutputFormatter {
 		sheet.setColumnWidth(5, 15*256);
 		sheet.setColumnWidth(6, 15*256);
 		sheet.setColumnWidth(7, 15*256);
+	}
+	
+	public void setCollumnWidthResultTable(XSSFSheet sheet) {
+		sheet.setColumnWidth(0, 10*256);
+		sheet.setColumnWidth(1, 20*256);
+		sheet.setColumnWidth(2, 20*256);
+		sheet.setColumnWidth(3, 15*256);
+		sheet.setColumnWidth(4, 15*256);
+		sheet.setColumnWidth(5, 20*256);
+		sheet.setColumnWidth(6, 20*256);
+		sheet.setColumnWidth(7, 25*256);
+		sheet.setColumnWidth(8, 25*256);
+		sheet.setColumnWidth(9, 26*256);
 	}
 	
 	public XSSFCellStyle createStandardTableCellStyle(XSSFWorkbook workbook) {
@@ -84,30 +97,23 @@ public class OutputFormatter {
 		
 		return sensorCellStyle;
 	}
-	
-	public XSSFCellStyle createStandardTableCellFont(XSSFWorkbook workbook) {
-		XSSFCellStyle standardCellStyle = workbook.createCellStyle();
-		XSSFFont tableFont = createStandardFont(workbook);
-		standardCellStyle.setFont(tableFont);
-		setStandardCellStyleAlignments(workbook, standardCellStyle);
 
-		return standardCellStyle;
-	}
 	
-	public XSSFFont createStandardFont(XSSFWorkbook workbook) {
-		XSSFFont tableFont = workbook.createFont();
-		tableFont.setFontName("CALIBRI");
-		tableFont.setFontHeightInPoints((short) 11);
+	public XSSFCellStyle createHeadlineCellStyle(XSSFWorkbook wb) {
+		XSSFCellStyle styleHeadline = wb.createCellStyle();
+		XSSFFont headlineFont = wb.createFont();
+		headlineFont.setBold(true);
+		headlineFont.setFontName("CALIBRI");
+		headlineFont.setFontHeightInPoints((short) 14);
+		styleHeadline.setFont(headlineFont);
 		
-		return tableFont;
+		return styleHeadline;
 	}
 	
-	public XSSFCellStyle createMenueFont(XSSFWorkbook wb) {
+	public XSSFCellStyle createMenueCellStyle(XSSFWorkbook wb) {
 		XSSFCellStyle styleMenueBar = wb.createCellStyle();
-		XSSFFont menueFont = wb.createFont();
+		XSSFFont menueFont = createStandardFont(wb);
 		menueFont.setBold(true);
-		menueFont.setFontName(XSSFFont.DEFAULT_FONT_NAME);
-		menueFont.setFontHeightInPoints((short) 11);
 		styleMenueBar.setFont(menueFont);
 		styleMenueBar.setVerticalAlignment(VerticalAlignment.CENTER);
 		
@@ -116,9 +122,7 @@ public class OutputFormatter {
 	
 	public XSSFCellStyle createTableFontWithSensor(XSSFWorkbook wb) {
 		XSSFCellStyle styleTable = wb.createCellStyle();
-		XSSFFont tableFont = wb.createFont();
-		tableFont.setFontName(XSSFFont.DEFAULT_FONT_NAME);
-		tableFont.setFontHeightInPoints((short) 11);
+		XSSFFont tableFont = createStandardFont(wb);
 		styleTable.setFont(tableFont);
 		styleTable.setVerticalAlignment(VerticalAlignment.CENTER);
 		
@@ -127,10 +131,8 @@ public class OutputFormatter {
 	
 	public XSSFCellStyle createTableFontWithoutSensor(XSSFWorkbook wb) {
 		XSSFCellStyle styleTable = wb.createCellStyle();
-		XSSFFont tableFont = wb.createFont();
+		XSSFFont tableFont = createStandardFont(wb);
 		tableFont.setBold(true);
-		tableFont.setFontName(XSSFFont.DEFAULT_FONT_NAME);
-		tableFont.setFontHeightInPoints((short) 11);
 		styleTable.setFont(tableFont);
 		styleTable.setVerticalAlignment(VerticalAlignment.CENTER);
 		
@@ -148,5 +150,22 @@ public class OutputFormatter {
 		cellStyle.setBorderRight(BorderStyle.THIN);
 		cellStyle.setBorderLeft(BorderStyle.THIN);
 	}
+	
+	public XSSFFont createStandardFont(XSSFWorkbook workbook) {
+		XSSFFont standardFont = workbook.createFont();
+		standardFont.setFontName("CALIBRI");
+		standardFont.setFontHeightInPoints((short) 11);
+		
+		return standardFont;
+	}
+	
+	public XSSFCellStyle createStandardTableCellFont(XSSFWorkbook workbook) {
+		XSSFCellStyle standardCellStyle = workbook.createCellStyle();
+		XSSFFont tableFont = createStandardFont(workbook);
+		standardCellStyle.setFont(tableFont);
+		setStandardCellStyleAlignments(workbook, standardCellStyle);
 
+		return standardCellStyle;
+	}
+	
 }

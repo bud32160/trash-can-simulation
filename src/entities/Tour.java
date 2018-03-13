@@ -30,14 +30,27 @@ public class Tour {
 	{
 		this.tourNumber = tourNumber;
 		this.manager = manager;
-		this.canList = manager.getCanList();
-		assignSensors();
+		this.canList = copyCanList();
+		
+		assignSensors(getCanList());
 		assignRandomFillLevels();
 		createLists();
 	}
 	
+	private List<TrashCan> copyCanList() {
+		List<TrashCan> canList = new ArrayList<TrashCan>();
+		
+		for(TrashCan can : manager.getCanList()) {
+			canList.add(can);
+		}
+		
+		return canList;
+	}
+
+	// TODO Change function (InputManager canList should not be changed)
+	
 	// Assign sensors to cans in canList
-	private void assignSensors() {
+	private void assignSensors(List<TrashCan> canList) {
 		int index;
 		int count = manager.getNumberOfSensors();
 		
@@ -46,10 +59,10 @@ public class Tour {
 			// Get random Element
 			index = ThreadLocalRandom.current().nextInt(manager.getNumberOfCans());
 			// Check if there is not already a sensor installed
-			if(getCanList().get(index).isSensor() == false)
+			if(canList.get(index).isSensor() == false)
 			{
 				// Assign sensor
-				getCanList().get(index).setSensor(true);
+				canList.get(index).setSensor(true);
 				count--;
 			}
 		}
@@ -100,7 +113,7 @@ public class Tour {
 		//Set all levels to FULL
 		for(int i = 0; i < manager.getNumberOfCans(); i++)
 		{
-			getCanList().get(i).setFillLevel(fullLevel);
+			canList.get(i).setFillLevel(fullLevel);
 		}
 		
 		helpCounter = countOfEmptyCans;
@@ -110,10 +123,10 @@ public class Tour {
 			//Get random Element
 			index = ThreadLocalRandom.current().nextInt(manager.getNumberOfCans());
 			//Check if Level is FULL
-			if(getCanList().get(index).getFillLevel() == fullLevel)
+			if(canList.get(index).getFillLevel() == fullLevel)
 			{
 				//Set to empty
-				getCanList().get(index).setFillLevel(emptyLevel);
+				canList.get(index).setFillLevel(emptyLevel);
 				helpCounter--;
 			}
 		}
@@ -125,10 +138,10 @@ public class Tour {
 			//Get random Element
 			index = ThreadLocalRandom.current().nextInt(manager.getNumberOfCans());
 			//Check if Level is FULL
-			if(getCanList().get(index).getFillLevel() == fullLevel)
+			if(canList.get(index).getFillLevel() == fullLevel)
 			{
 				//Set to overFull
-				getCanList().get(index).setFillLevel(overFullLevel);
+				canList.get(index).setFillLevel(overFullLevel);
 				helpCounter--;
 			}
 		}
@@ -137,7 +150,7 @@ public class Tour {
 	
 	// Assign cans to different list depending on having a sensor and fillLevel
 	private void createLists() {
-		Iterator<TrashCan> iterator = getCanList().iterator();
+		Iterator<TrashCan> iterator = canList.iterator();
 		List<TrashCan> cansWithoutSensorList = new ArrayList<TrashCan>();
 		List<TrashCan> cansWithSensorList = new ArrayList<TrashCan>();
 		List<TrashCan> emptyCansWithSensorList = new ArrayList<TrashCan>();

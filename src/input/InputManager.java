@@ -26,6 +26,7 @@ public class InputManager {
 	private int emptyFillLevelPercentage;
 	private int overFullFillLevelPercentage;
 	private List<TrashCan> canList;
+	private int simulationIterations;
 	
 	
 	public void readDataInput() throws IOException{
@@ -58,6 +59,10 @@ public class InputManager {
 		row = sheet.getRow(7);
 		cell = row.getCell(1);
 		setSingleDrivingDistance((int) cell.getNumericCellValue());
+		
+		row = sheet.getRow(8);
+		cell = row.getCell(1);
+		setSimulationIterations((int) cell.getNumericCellValue());
 		
 		setCanList(readTourSheetInput());
 		setNumberOfCans(canList.size());
@@ -236,5 +241,13 @@ public class InputManager {
 	public void setCanList(List<TrashCan> canList) {
 		this.canList = canList;
 	}
-		
+
+	public int getSimulationIterations() {
+		return simulationIterations;
+	}
+
+	public void setSimulationIterations(int simulationIterations) {
+		this.simulationIterations = simulationIterations;
+	}
+	
 }

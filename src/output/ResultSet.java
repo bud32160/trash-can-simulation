@@ -25,8 +25,8 @@ public class ResultSet {
 	private double distanceSaved;
 	private double timeWasted;
 	private double unnecessaryDistance;
-	private int amountOfClearenceComplete;
-	private int amountOfClearenceSaved;
+	private int amountOfClearanceComplete;
+	private int amountOfClearanceSaved;
 	private int unnecessaryCleared;
 	
 	public ResultSet()
@@ -45,7 +45,6 @@ public class ResultSet {
 		calculateUnnecessaryAmounts();
 		
 		createOutputTourFile();
-		writeInOutputResultFile();
 	}
 	
 	private void createOutputTourFile() throws FileNotFoundException {
@@ -57,17 +56,18 @@ public class ResultSet {
 		OutputFormatter formatter = new OutputFormatter();
 		
 		
-		formatter.setCollumnWidt(sheet);
-		XSSFRow headline = sheet.createRow(0);
-		headline.createCell(0).setCellValue("Tour " + tourNumber);
-		int menueBarIndex = 2;
+		formatter.setCollumnWidthTourTable(sheet);
+		XSSFRow headlineRow = sheet.createRow(0);
+		XSSFCell headlineCell = headlineRow.createCell(0);
+		headlineCell.setCellValue("Tour " + tourNumber);
+		headlineCell.setCellStyle(formatter.createHeadlineCellStyle(wb));
 		
-		createMenueBar(wb, sheet, menueBarIndex);
+		int menueBarIndex = 2;
+		createTourSheetMenueBar(wb, sheet, menueBarIndex);
 		
 		int start = 3;
         int count = start;
         XSSFRow row;    
-        
         for (TrashCan can : tour.getCanList()) {
         	row = sheet.createRow(count);
             writeTourResult(wb, row, can);
@@ -85,30 +85,10 @@ public class ResultSet {
 		}
 	}
 	
-	public void writeInOutputResultFile() throws FileNotFoundException {
-		XSSFWorkbook wb = new XSSFWorkbook();
-		String tourNumber = tour.getTourNumber();
-		String location = System.getProperty("user.dir") + "\\output\\ResultData" + tourNumber + ".xlsx";
-		FileOutputStream outputStream = new FileOutputStream(new File(location));
-		XSSFSheet sheet = wb.createSheet("Tour " + tourNumber);
-		
-		XSSFRow headline = sheet.createRow(0);
-		headline.createCell(0).setCellValue("Resultset Tour " + tourNumber);
-		
-		createResultSet(wb, sheet);
-		try {
-			wb.write(outputStream);
-			outputStream.close();
-			wb.close();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	}
-	
-	public void createMenueBar(XSSFWorkbook wb, XSSFSheet sheet, int index) {
+	public void createTourSheetMenueBar(XSSFWorkbook wb, XSSFSheet sheet, int index) {
 		OutputFormatter formatter = new OutputFormatter();
 		XSSFRow menue = sheet.createRow(index);
+		XSSFCellStyle menueStyle = formatter.createMenueCellStyle(wb);
 		menue.createCell(0).setCellValue("Can Nr.");
 		menue.createCell(1).setCellValue("Public status");
 		menue.createCell(2).setCellValue("Location");
@@ -118,7 +98,6 @@ public class ResultSet {
 		menue.createCell(6).setCellValue("Sensor");
 		menue.createCell(7).setCellValue("Day");
 		
-		XSSFCellStyle menueStyle = formatter.createMenueFont(wb);
 		for(int i = 0; i <= 7; i++) {
 			menue.getCell(i).setCellStyle(menueStyle);
 		}
@@ -154,18 +133,49 @@ public class ResultSet {
 		cell.setCellStyle(standardTableCellStyle);
 	}
 	
-	public void createResultSet(XSSFWorkbook wb, XSSFSheet sheet) {
-		XSSFRow row = sheet.createRow(2);
-		row.createCell(0).setCellValue("duration complete:");
-		row.createCell(1).setCellValue(getDurationComplete());
+	public void writeResultSet(XSSFWorkbook wb, XSSFSheet sheet, XSSFRow row) {
+		OutputFormatter formatter = new OutputFormatter();
+		XSSFCell cell;
 		
-		row = sheet.createRow(3);
-		row.createCell(0).setCellValue("distance complete:");
-		row.createCell(1).setCellValue(getDistanceComplete());
+		cell = row.createCell(0);
+		cell.setCellStyle(formatter.createStandardTableCellStyle(wb));
+		cell.setCellValue(Integer.parseInt(tour.getTourNumber()));
 		
-		row = sheet.createRow(4);
-		row.createCell(0).setCellValue("distance complete:");
-		row.createCell(1).setCellValue(getDistanceComplete());
+		cell = row.createCell(1);
+		cell.setCellStyle(formatter.createStandardTableCellStyle(wb));
+		cell.setCellValue(getDurationComplete());
+		
+		cell = row.createCell(2);
+		cell.setCellStyle(formatter.createStandardTableCellStyle(wb));
+		cell.setCellValue(getDistanceComplete());
+
+		cell = row.createCell(3);
+		cell.setCellStyle(formatter.createStandardTableCellStyle(wb));
+		cell.setCellValue(getTimeSaved());
+
+		cell = row.createCell(4);
+		cell.setCellStyle(formatter.createStandardTableCellStyle(wb));
+		cell.setCellValue(getDistanceSaved());
+
+		cell = row.createCell(5);
+		cell.setCellStyle(formatter.createStandardTableCellStyle(wb));
+		cell.setCellValue(getTimeWasted());
+
+		cell = row.createCell(6);
+		cell.setCellStyle(formatter.createStandardTableCellStyle(wb));
+		cell.setCellValue(getUnnecessaryDistance());
+		
+		cell = row.createCell(7);
+		cell.setCellStyle(formatter.createStandardTableCellStyle(wb));
+		cell.setCellValue(getAmountOfClearanceComplete());
+		
+		cell = row.createCell(8);
+		cell.setCellStyle(formatter.createStandardTableCellStyle(wb));
+		cell.setCellValue(getAmountOfClearanceSaved());
+		
+		cell = row.createCell(9);
+		cell.setCellStyle(formatter.createStandardTableCellStyle(wb));
+		cell.setCellValue(getUnnecessaryCleared());
 	}
 	
 	// Calculation functions
@@ -218,8 +228,8 @@ public class ResultSet {
 	
 	
 	private void calculateAmountOfClearences() {
-		this.amountOfClearenceComplete = tour.getCanList().size() - tour.getEmptyCansWithSensorList().size();
-		this.amountOfClearenceSaved = tour.getEmptyCansWithSensorList().size();
+		this.amountOfClearanceComplete = tour.getCanList().size() - tour.getEmptyCansWithSensorList().size();
+		this.amountOfClearanceSaved = tour.getEmptyCansWithSensorList().size();
 	}
 
 	private void calculateUnnecessaryAmounts() {
@@ -284,12 +294,12 @@ public class ResultSet {
 		this.distanceSaved = distanceSaved;
 	}
 
-	public int getAmountOfClearenceSaved() {
-		return amountOfClearenceSaved;
+	public int getAmountOfClearanceSaved() {
+		return amountOfClearanceSaved;
 	}
 
-	public void setAmountOfClearenceSaved(int amountOfClearenceSaved) {
-		this.amountOfClearenceSaved = amountOfClearenceSaved;
+	public void setAmountOfClearanceSaved(int amountOfClearanceSaved) {
+		this.amountOfClearanceSaved = amountOfClearanceSaved;
 	}
 	
 	public double getTimeWasted() {
@@ -300,12 +310,12 @@ public class ResultSet {
 		this.timeWasted = timeWasted;
 	}
 
-	public int getAmountOfClearenceComplete() {
-		return amountOfClearenceComplete;
+	public int getAmountOfClearanceComplete() {
+		return amountOfClearanceComplete;
 	}
 
-	public void setAmountOfClearenceComplete(int amountOfClearenceComplete) {
-		this.amountOfClearenceComplete = amountOfClearenceComplete;
+	public void setAmountOfClearanceComplete(int amountOfClearanceComplete) {
+		this.amountOfClearanceComplete = amountOfClearanceComplete;
 	}
 	
 	public double getUnnecessaryDistance() {

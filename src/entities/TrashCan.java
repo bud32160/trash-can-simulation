@@ -94,4 +94,12 @@ public class TrashCan {
 		this.daySpecification = daySpecification;
 	}
 	
+	public String sensorBooleanToString() {
+		if(this.sensor) {
+			return "TRUE";
+		}
+		else
+			return "FALSE";
+	}
+	
 }

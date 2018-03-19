@@ -126,7 +126,7 @@ public class ResultSet {
 		cell.setCellValue(can.getFillLevel().toString());
 		cell.setCellStyle(formatter.createFillLevelCellStyle(wb, can.getFillLevel()));
 		cell = row.createCell(6);
-		cell.setCellValue(can.isSensor());
+		cell.setCellValue(can.sensorBooleanToString());
 		cell.setCellStyle(formatter.createSensorCellStyle(wb, can.isSensor()));
 		cell = row.createCell(7);
 		cell.setCellValue(can.getDaySpecification().toString());

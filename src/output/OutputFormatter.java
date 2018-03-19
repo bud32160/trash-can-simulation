@@ -57,8 +57,6 @@ public class OutputFormatter {
 		XSSFFont tableFont = createStandardFont(workbook);
 		gpsDataCellStyle.setFont(tableFont);
 		setStandardCellStyleAlignments(workbook, gpsDataCellStyle);
-		
-		// TODO find solution for GPS format with ##.#####
 		gpsDataCellStyle.setDataFormat(HSSFDataFormat.getBuiltinFormat("##.#####"));
 		
 		return gpsDataCellStyle;

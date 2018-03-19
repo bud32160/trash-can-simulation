@@ -12,7 +12,7 @@
 *.pydevproject
 .project
 .metadata
-bin/**
+bin/**/*
 tmp/**
 tmp/**/*
 *.tmp
@@ -24,9 +24,10 @@ local.properties
 .settings/
 .loadpath
 
-# Output folder for automaticly generated files
+# Output / Input folder for automaticly generated files
 ###############################################
 output/**
+input/**
 
 # Packages #
 ############

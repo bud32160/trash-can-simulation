@@ -5,13 +5,15 @@ import java.io.IOException;
 
 import input.InputManager;
 import output.ResultSet;
+import output.SimulationResult;
 import entities.Tour;
 
 public class Simulation {
-
+	
 	static InputManager manager = new InputManager();
-	static Tour tour = new Tour();
 	static ResultSet resultSet = new ResultSet();
+	static SimulationResult simulationResult = new SimulationResult();
+
 	
 	public static void main(String[] args) throws FileNotFoundException {
 		
@@ -19,29 +21,37 @@ public class Simulation {
 		 * 
 		 * 
 		 *	Missing: 
-		 * - exception handling
-		 * - gui for usecases
+		 * - GUI for use cases
 		 * 
 		 */
 		
-		//Input Data
 		try {
 			manager.readDataInput();
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		//Create Tour
-		tour = createTour(manager);
-		//Simulate tour
-		resultSet = simulateTour(tour);
-		//Print results
 		
+		// TODO switch InputManager outside the for-loop, one generation is enough
+		for(int i = 1; i <= manager.getSimulationIterations(); i++) {
+			
+			try {
+				manager.readDataInput();
+			} catch (IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
+			resultSet = simulateTour(createTour(manager, i));
+			simulationResult.getResultSetList().add(resultSet);
+		}
+		
+		simulationResult.createSimulationResult();
 	}
 	
 	
-	private static Tour createTour(InputManager manager) {
-		Tour tour = new Tour(Integer.toString(1), manager);
+	private static Tour createTour(InputManager manager, int tourNumber) {
+		Tour tour = new Tour(Integer.toString(tourNumber), manager);
 		return tour;
 	}
 
@@ -57,7 +67,7 @@ public class Simulation {
 
 	
 	/*
-	 * Functin for intelligent sensoring depending on input parameter
+	 * Function for intelligent measuring depending on input parameter
 	 * 
 	 * 
 	private static void fillIntelligentFillLevelList(InputManager manager, List<TrashCan> canList, int countOfEmptyCans) {
@@ -71,7 +81,7 @@ public class Simulation {
 			canList.get(i).setFillLevel(fullLevel);
 		}
 		
-		//Calculate the minium amount of empty cans with sensor depending on the sensorIntelligencePercentage
+		//Calculate the minimum amount of empty cans with sensor depending on the sensorIntelligencePercentage
 		countOfSensorIntelligence = calculateCounterOfEmptyCans(manager.getSensorIntelligencePercentage(), manager.);
 		//Calculate the remaining empty cans
 		countOfRemainingEmptyCans = countOfEmptyCans - countOfSensorIntelligence;

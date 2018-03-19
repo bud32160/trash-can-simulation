@@ -71,7 +71,7 @@ public class InputManager {
 	
 	
 	public List<TrashCan> readTourSheetInput() throws IOException {
-        String location = System.getProperty("user.dir") + "\\input\\tour_sheets\\TourSheet.xlsx";
+        String location = System.getProperty("user.dir") + "\\input\\can_list\\TourSheet.xlsx";
         List<TrashCan> canList = new ArrayList<TrashCan>();
         TrashCan can = new TrashCan();
 	

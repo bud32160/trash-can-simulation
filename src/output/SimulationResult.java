@@ -35,7 +35,7 @@ public class SimulationResult {
 		headlineCell.setCellStyle(formatter.createHeadlineCellStyle(wb));
 		
 		createMenueBar(wb, sheet, 2);
-		int rowIndex = 3;
+		int rowIndex = 4;
 		XSSFRow row;
 		for(ResultSet resultSet : resultSetList) {
 			row = sheet.createRow(rowIndex);
@@ -55,21 +55,33 @@ public class SimulationResult {
 	
 	public void createMenueBar(XSSFWorkbook wb, XSSFSheet sheet, int index) {
 		OutputFormatter formatter = new OutputFormatter();
-		XSSFRow menue = sheet.createRow(index);
+		XSSFRow menueFirst = sheet.createRow(index);
+		XSSFRow menueSecond = sheet.createRow(index + 1);
 		XSSFCellStyle menueStyle = formatter.createMenueCellStyle(wb);
-		menue.createCell(0).setCellValue("Tour nr:");
-		menue.createCell(1).setCellValue("Duration complete:");
-		menue.createCell(2).setCellValue("Distance complete:");
-		menue.createCell(3).setCellValue("Time saved:");
-		menue.createCell(4).setCellValue("Distance saved:");
-		menue.createCell(5).setCellValue("Time wasted:");
-		menue.createCell(6).setCellValue("Unnecessary distance:");
-		menue.createCell(7).setCellValue("Amount of clearances complete:");
-		menue.createCell(8).setCellValue("Amount of clearances saved:");
-		menue.createCell(9).setCellValue("Amount of unnecessary cleared:");
+		menueFirst.createCell(0).setCellValue("Tour nr");
+		menueSecond.createCell(0);
+		menueFirst.createCell(1).setCellValue("Duration complete");
+		menueSecond.createCell(1).setCellValue("in minutes");
+		menueFirst.createCell(2).setCellValue("Distance complete");
+		menueSecond.createCell(2).setCellValue("in kilometers");
+		menueFirst.createCell(3).setCellValue("Time saved");
+		menueSecond.createCell(3).setCellValue("in minutes");
+		menueFirst.createCell(4).setCellValue("Distance saved");
+		menueSecond.createCell(4).setCellValue("in kilometers");
+		menueFirst.createCell(5).setCellValue("Time wasted");
+		menueSecond.createCell(5).setCellValue("in minutes");
+		menueFirst.createCell(6).setCellValue("Unnecessary distance");
+		menueSecond.createCell(6).setCellValue("in kilometers");
+		menueFirst.createCell(7).setCellValue("Amount of clearances");
+		menueSecond.createCell(7).setCellValue("complete");
+		menueFirst.createCell(8).setCellValue("Amount of clearances");
+		menueSecond.createCell(8).setCellValue("saved");
+		menueFirst.createCell(9).setCellValue("Amount of clearances");
+		menueSecond.createCell(9).setCellValue("unnecessary");
 		
 		for(int i = 0; i <= 9; i++) {
-			menue.getCell(i).setCellStyle(menueStyle);
+			menueFirst.getCell(i).setCellStyle(menueStyle);
+			menueSecond.getCell(i).setCellStyle(menueStyle);
 		}
 	}
 

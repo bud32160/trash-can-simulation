@@ -138,32 +138,32 @@ public class ResultSet {
 		XSSFCell cell;
 		
 		cell = row.createCell(0);
-		cell.setCellStyle(formatter.createStandardTableCellStyle(wb));
+		cell.setCellStyle(formatter.createSensorCellStyle(wb, true));
 		cell.setCellValue(Integer.parseInt(tour.getTourNumber()));
 		
 		cell = row.createCell(1);
 		cell.setCellStyle(formatter.createStandardTableCellStyle(wb));
-		cell.setCellValue(getDurationComplete());
+		cell.setCellValue(Math.round(getDurationComplete() / 60));
 		
 		cell = row.createCell(2);
 		cell.setCellStyle(formatter.createStandardTableCellStyle(wb));
-		cell.setCellValue(getDistanceComplete());
+		cell.setCellValue(Math.round(getDistanceComplete() / 1000));
 
 		cell = row.createCell(3);
 		cell.setCellStyle(formatter.createStandardTableCellStyle(wb));
-		cell.setCellValue(getTimeSaved());
+		cell.setCellValue(Math.round(getTimeSaved() / 60));
 
 		cell = row.createCell(4);
 		cell.setCellStyle(formatter.createStandardTableCellStyle(wb));
-		cell.setCellValue(getDistanceSaved());
+		cell.setCellValue(Math.round(getDistanceSaved() / 1000));
 
 		cell = row.createCell(5);
 		cell.setCellStyle(formatter.createStandardTableCellStyle(wb));
-		cell.setCellValue(getTimeWasted());
+		cell.setCellValue(Math.round(getTimeWasted() / 60));
 
 		cell = row.createCell(6);
 		cell.setCellStyle(formatter.createStandardTableCellStyle(wb));
-		cell.setCellValue(getUnnecessaryDistance());
+		cell.setCellValue(Math.round(getUnnecessaryDistance() / 1000));
 		
 		cell = row.createCell(7);
 		cell.setCellStyle(formatter.createStandardTableCellStyle(wb));

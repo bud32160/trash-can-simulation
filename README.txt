@@ -12,9 +12,15 @@ Input Excel sheet with general input data
 -driving and emptying times
 -number of iterations
 
-tour sheets
+filename: "InputData"
+
+can_list
 Input Excel sheet with trash can data
 - list of all trash cans for simulation
+
+filename: "TourSheet"
+
+generates:
 
 #output folder (depends on number of iterations)
 - Output Excel sheets for every single tour result

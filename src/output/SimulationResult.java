@@ -16,14 +16,20 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 public class SimulationResult {
 	
 	private List<ResultSet> resultSetList;
+	private ResultSet avarageResultSet;
 	
 	public SimulationResult() {
 		this.resultSetList = new ArrayList<ResultSet>();
 	}
 	
+	// UNUSED function
+	public void printAvarageResult() {
+		System.out.println("Anzahl Sensoren: " + this.resultSetList.get(0).getTour().getManager().getNumberOfSensors() + "    Anzahl gesparte Tonnen: " + this.avarageResultSet.getAmountOfClearanceSaved() + "  Clearence Time saved: " + this.avarageResultSet.getClearenceTimeSaved() + "   Time saved: " + this.avarageResultSet.getTimeSaved() + "   Stecke gespart: " + this.avarageResultSet.getDistanceSaved());
+	}
+	
 	public void createSimulationResult() throws FileNotFoundException {
 		XSSFWorkbook wb = new XSSFWorkbook();
-		String location = System.getProperty("user.dir") + "\\output\\SimulationResult.xlsx";
+		String location = System.getProperty("user.dir") + "\\output\\SimulationResult" + resultSetList.get(0).getTour().getManager().getNumberOfSensors() + "Sensors.xlsx";
 		FileOutputStream outputStream = new FileOutputStream(new File(location));
 		XSSFSheet sheet = wb.createSheet("Simulation result");
 		OutputFormatter formatter = new OutputFormatter();
@@ -42,6 +48,11 @@ public class SimulationResult {
 			resultSet.writeResultSet(wb, sheet, row);
 			rowIndex++;
 		}
+		
+		ResultSet avarageResultSet = new ResultSet();
+		avarageResultSet.createAvarageResultSet(resultSetList);
+		row = sheet.createRow(rowIndex);
+		avarageResultSet.writeAvarageResultSet(wb, sheet, row);
 		
 		try {
 			wb.write(outputStream);
@@ -64,22 +75,24 @@ public class SimulationResult {
 		menueSecond.createCell(1).setCellValue("in minutes");
 		menueFirst.createCell(2).setCellValue("Distance complete");
 		menueSecond.createCell(2).setCellValue("in kilometers");
-		menueFirst.createCell(3).setCellValue("Time saved");
+		menueFirst.createCell(3).setCellValue("Clearence time saved");
 		menueSecond.createCell(3).setCellValue("in minutes");
-		menueFirst.createCell(4).setCellValue("Distance saved");
-		menueSecond.createCell(4).setCellValue("in kilometers");
-		menueFirst.createCell(5).setCellValue("Time wasted");
-		menueSecond.createCell(5).setCellValue("in minutes");
-		menueFirst.createCell(6).setCellValue("Unnecessary distance");
-		menueSecond.createCell(6).setCellValue("in kilometers");
-		menueFirst.createCell(7).setCellValue("Amount of clearances");
-		menueSecond.createCell(7).setCellValue("complete");
+		menueFirst.createCell(4).setCellValue("Time saved");
+		menueSecond.createCell(4).setCellValue("in minutes");
+		menueFirst.createCell(5).setCellValue("Distance saved");
+		menueSecond.createCell(5).setCellValue("in kilometers");
+		menueFirst.createCell(6).setCellValue("Time wasted");
+		menueSecond.createCell(6).setCellValue("in minutes");
+		menueFirst.createCell(7).setCellValue("Unnecessary distance");
+		menueSecond.createCell(7).setCellValue("in kilometers");
 		menueFirst.createCell(8).setCellValue("Amount of clearances");
-		menueSecond.createCell(8).setCellValue("saved");
+		menueSecond.createCell(8).setCellValue("complete");
 		menueFirst.createCell(9).setCellValue("Amount of clearances");
-		menueSecond.createCell(9).setCellValue("unnecessary");
+		menueSecond.createCell(9).setCellValue("saved");
+		menueFirst.createCell(10).setCellValue("Amount of clearances");
+		menueSecond.createCell(10).setCellValue("unnecessary");
 		
-		for(int i = 0; i <= 9; i++) {
+		for(int i = 0; i <= 10; i++) {
 			menueFirst.getCell(i).setCellStyle(menueStyle);
 			menueSecond.getCell(i).setCellStyle(menueStyle);
 		}
@@ -92,5 +105,15 @@ public class SimulationResult {
 	public void setResultSetList(List<ResultSet> resultSetList) {
 		this.resultSetList = resultSetList;
 	}
+
+	public ResultSet getAvarageResultSet() {
+		return avarageResultSet;
+	}
+
+	public void setAvarageResultSet(ResultSet avarageResultSet) {
+		this.avarageResultSet = avarageResultSet;
+	}
+	
+	
 
 }

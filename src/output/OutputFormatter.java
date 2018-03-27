@@ -7,6 +7,7 @@ import org.apache.poi.ss.usermodel.HorizontalAlignment;
 import org.apache.poi.ss.usermodel.VerticalAlignment;
 import org.apache.poi.xssf.usermodel.XSSFCellStyle;
 import org.apache.poi.xssf.usermodel.XSSFColor;
+import org.apache.poi.xssf.usermodel.XSSFDataFormat;
 import org.apache.poi.xssf.usermodel.XSSFFont;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
@@ -52,12 +53,24 @@ public class OutputFormatter {
 		return standardCellStyle;
 	}
 	
+	public XSSFCellStyle createDoubleNumericTableCellStyle(XSSFWorkbook workbook) {
+		XSSFCellStyle standardCellStyle = workbook.createCellStyle();
+		XSSFFont tableFont = createStandardFont(workbook);
+		standardCellStyle.setFont(tableFont);
+		setStandardCellStyleAlignments(workbook, standardCellStyle);
+		standardCellStyle.setDataFormat(HSSFDataFormat.getBuiltinFormat("0,00"));
+		
+		return standardCellStyle;
+	}
+	
 	public XSSFCellStyle createGpsDataTableCellStyle(XSSFWorkbook workbook) {
+		String gpsDataCellFormat = "##\".\"#####";
+		XSSFDataFormat dataFormat = workbook.createDataFormat();
 		XSSFCellStyle gpsDataCellStyle = workbook.createCellStyle();
 		XSSFFont tableFont = createStandardFont(workbook);
+		gpsDataCellStyle.setDataFormat(dataFormat.getFormat(gpsDataCellFormat));
 		gpsDataCellStyle.setFont(tableFont);
 		setStandardCellStyleAlignments(workbook, gpsDataCellStyle);
-		gpsDataCellStyle.setDataFormat(HSSFDataFormat.getBuiltinFormat("##.#####"));
 		
 		return gpsDataCellStyle;
 	}

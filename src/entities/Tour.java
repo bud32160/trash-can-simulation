@@ -19,6 +19,7 @@ public class Tour {
 	private List<TrashCan> cansWithoutSensorList;
 	private List<TrashCan> cansWithSensorList;
 	private List<TrashCan> emptyCansWithSensorList;
+	private List<TrashCan> fullCansList;
 	private ResultSet resultSet;
 
 	public Tour()
@@ -32,7 +33,7 @@ public class Tour {
 		this.manager = manager;
 		this.canList = copyCanList();
 		
-		assignSensors(getCanList());
+		assignSensors();
 		assignRandomFillLevels();
 		createLists();
 	}
@@ -50,7 +51,7 @@ public class Tour {
 	// TODO Change function (InputManager canList should not be changed)
 	
 	// Assign sensors to cans in canList
-	private void assignSensors(List<TrashCan> canList) {
+	private void assignSensors() {
 		int index;
 		int count = manager.getNumberOfSensors();
 		
@@ -154,11 +155,16 @@ public class Tour {
 		List<TrashCan> cansWithoutSensorList = new ArrayList<TrashCan>();
 		List<TrashCan> cansWithSensorList = new ArrayList<TrashCan>();
 		List<TrashCan> emptyCansWithSensorList = new ArrayList<TrashCan>();
+		List<TrashCan> fullCansList = new ArrayList<TrashCan>();
 		EFillLevel emptyLevel = EFillLevel.EMPTY;
+		EFillLevel fullLevel = EFillLevel.FULL;
+		EFillLevel overfullLevel = EFillLevel.OVERFULL;
 		TrashCan can = new TrashCan();
 		
 		while (iterator.hasNext()) {
 			can = iterator.next();
+			if(can.getFillLevel().equals(fullLevel) || can.getFillLevel().equals(overfullLevel))
+				fullCansList.add(can);
 			if(can.isSensor() == false)
 				cansWithoutSensorList.add(can);
 			else
@@ -169,10 +175,10 @@ public class Tour {
 			}
 		}
 		
+		this.fullCansList = fullCansList;
 		this.cansWithoutSensorList = cansWithoutSensorList;
 		this.cansWithSensorList = cansWithSensorList;
 		this.emptyCansWithSensorList = emptyCansWithSensorList;
-
 	}
 	
 	// Getters and Setters
@@ -230,6 +236,14 @@ public class Tour {
 
 	public void setEmptyCansWithSensorList(List<TrashCan> emptyCansWithSensorList) {
 		this.emptyCansWithSensorList = emptyCansWithSensorList;
+	}
+
+	public List<TrashCan> getFullCansList() {
+		return fullCansList;
+	}
+
+	public void setFullCansList(List<TrashCan> fullCansList) {
+		this.fullCansList = fullCansList;
 	}
 
 	public ResultSet getResultSet() {

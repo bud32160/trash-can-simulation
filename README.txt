@@ -25,3 +25,5 @@ generates:
 #output folder (depends on number of iterations)
 - Output Excel sheets for every single tour result
 - Output Excel sheet for complete Simulation result
+- Output Excel sheet with only full oder overfull cans for every Tour result
+- Output .tsp file for ACO algorithm test run

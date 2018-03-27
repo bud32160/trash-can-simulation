@@ -2,6 +2,7 @@ package simulation;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 
 import input.InputManager;
 import output.ResultSet;
@@ -11,19 +12,11 @@ import entities.Tour;
 public class Simulation {
 	
 	static InputManager manager = new InputManager();
-	static ResultSet resultSet = new ResultSet();
-	static SimulationResult simulationResult = new SimulationResult();
+	static ResultSet resultSet;
+	static SimulationResult simulationResult;
 
 	
-	public static void main(String[] args) throws FileNotFoundException {
-		
-		/*
-		 * 
-		 * 
-		 *	Missing: 
-		 * - GUI for use cases
-		 * 
-		 */
+	public static void main(String[] args) throws FileNotFoundException, UnsupportedEncodingException {
 		
 		try {
 			manager.readDataInput();
@@ -31,22 +24,31 @@ public class Simulation {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
+
+		resultSet = new ResultSet();
+		simulationResult = new SimulationResult();
+		ResultSet avarageResultSet = new ResultSet();
+
+			
 		// TODO switch InputManager outside the for-loop, one generation is enough
 		for(int i = 1; i <= manager.getSimulationIterations(); i++) {
-			
+		
 			try {
 				manager.readDataInput();
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-			
+
 			resultSet = simulateTour(createTour(manager, i));
 			simulationResult.getResultSetList().add(resultSet);
 		}
 		
 		simulationResult.createSimulationResult();
+		avarageResultSet.createAvarageResultSet(simulationResult.getResultSetList());
+		simulationResult.setAvarageResultSet(avarageResultSet);
+		simulationResult.printAvarageResult();
+		
 	}
 	
 	
@@ -55,15 +57,13 @@ public class Simulation {
 		return tour;
 	}
 
-	private static ResultSet simulateTour(Tour tour) throws FileNotFoundException {
+	private static ResultSet simulateTour(Tour tour) throws FileNotFoundException, UnsupportedEncodingException {
 		ResultSet resultSet = new ResultSet(tour);
 		return resultSet;
 	}
 	
 	
 }
-
-
 
 	
 	/*

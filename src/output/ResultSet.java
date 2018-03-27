@@ -4,7 +4,11 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.PrintWriter;
+import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 
 import org.apache.poi.xssf.usermodel.XSSFCell;
 import org.apache.poi.xssf.usermodel.XSSFCellStyle;
@@ -12,15 +16,18 @@ import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
+import entities.AcoCanFormat;
 import entities.Tour;
 import entities.TrashCan;
 import enumerations.EFillLevel;
+import enumerations.EPublicStatus;
 
 public class ResultSet {
 	
 	private Tour tour;
 	private double durationComplete;
 	private double distanceComplete;
+	private double clearenceTimeSaved;
 	private double timeSaved;
 	private double distanceSaved;
 	private double timeWasted;
@@ -34,17 +41,19 @@ public class ResultSet {
 		
 	}
 	
-	public ResultSet(Tour tour) throws FileNotFoundException
+	public ResultSet(Tour tour) throws FileNotFoundException, UnsupportedEncodingException
 	{
 		this.tour = tour;
 		calculateDurationComplete();
 		calculateDistanceComplete();
+		calculateClearenceTimeSaved();
 		calculateTimeSaved();
 		calculateDistanceSaved();
 		calculateAmountOfClearences();
 		calculateUnnecessaryAmounts();
-		
 		createOutputTourFile();
+		createOutputFullCansFile();
+		createOutputTspFile();
 	}
 	
 	private void createOutputTourFile() throws FileNotFoundException {
@@ -83,6 +92,115 @@ public class ResultSet {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+	}
+	
+	public void createOutputFullCansFile() throws FileNotFoundException {
+		XSSFWorkbook wb = new XSSFWorkbook();
+		String tourNumber = tour.getTourNumber();
+		String location = System.getProperty("user.dir") + "\\output\\FullCansListFile" + tourNumber + ".xlsx";
+		FileOutputStream outputStream = new FileOutputStream(new File(location));
+		XSSFSheet sheet = wb.createSheet("Tour " + tourNumber);
+		OutputFormatter formatter = new OutputFormatter();
+		
+		
+		formatter.setCollumnWidthTourTable(sheet);
+		XSSFRow headlineRow = sheet.createRow(0);
+		XSSFCell headlineCell = headlineRow.createCell(0);
+		headlineCell.setCellValue("Tour " + tourNumber);
+		headlineCell.setCellStyle(formatter.createHeadlineCellStyle(wb));
+		
+		int menueBarIndex = 2;
+		createTourSheetMenueBar(wb, sheet, menueBarIndex);
+		
+		int start = 3;
+        int count = start;
+        XSSFRow row;    
+        for (TrashCan can : tour.getFullCansList()) {
+        	row = sheet.createRow(count);
+            writeTourResult(wb, row, can);
+            count++;
+        }
+        
+        try {
+			wb.write(outputStream);
+			outputStream.close();
+			wb.close();
+			System.out.println("Successfully written in file!");
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+	public void createOutputTspFile() throws FileNotFoundException, UnsupportedEncodingException {
+		String tourNumber = tour.getTourNumber();
+		String location = System.getProperty("user.dir") + "\\output\\Tour" + tourNumber + ".tsp";
+		List<AcoCanFormat> acoCanList = createAcoCanList();
+		
+		PrintWriter writer = new PrintWriter(location, "UTF-8");
+		writer.println("NAME: " + "Tour" + tour.getTourNumber());
+		writer.println("TYPE: TSP");
+		writer.println("COMMENT: Regensburg Trash Collecltion " + "Tour1");
+		writer.println("DIMENSION: " + acoCanList.size());
+		writer.println("EDGE_WEIGHT_TYPE: GEO");
+		writer.println("DISPLAY_DATA_TYPE: COORD_DISPLAY");
+		writer.println("NODE_COORD_SECTION");
+		for(AcoCanFormat acoCan : acoCanList) {
+			writer.println(acoCan.getDescription() + " " + acoCan.getLatitude() + " " + acoCan.getLongitude());
+		}
+		writer.println("EOF");
+		
+		writer.close();
+	}
+	
+	public List<AcoCanFormat> createAcoCanList() {
+		List<AcoCanFormat> acoCanList = new ArrayList<AcoCanFormat>();
+		EPublicStatus publicStatus = EPublicStatus.PUBLIC;
+		
+		 for (TrashCan can : tour.getFullCansList()) {
+			 AcoCanFormat acoCan = new AcoCanFormat();
+			 // Create description for acoCan:  CanNr. + publicStatus
+			 if(can.getPublicStatus().equals(publicStatus))
+				 acoCan.setDescription(can.getCanNumber() + "PB");
+			 else
+				 acoCan.setDescription(can.getCanNumber() + "PT");
+			 
+			 // Calculate GEOCoordinates from GPSData
+			 acoCan.setLatitude(calculateGeoCoordinate(can.getGpsData().getLatitude()));
+			 acoCan.setLongitude(calculateGeoCoordinate(can.getGpsData().getLongitude()));
+			 
+			 acoCanList.add(acoCan);
+		 }
+		
+		return acoCanList;
+	}
+	
+	public double calculateGeoCoordinate(double gpsCoordinate) {
+		double geoCoordinate, coordinateRest;
+		boolean coordinateNegative = false;
+		
+		// Check if coordinate is negative
+		if(gpsCoordinate < 0) {
+			coordinateNegative = true;
+			gpsCoordinate = gpsCoordinate * -1;
+		}
+		
+		gpsCoordinate = gpsCoordinate / 100000;
+		
+		// Calculate geoCoordinate
+		geoCoordinate= ((int) gpsCoordinate);
+		coordinateRest = gpsCoordinate - geoCoordinate;
+		coordinateRest = (coordinateRest * 60) / 100;
+		geoCoordinate = geoCoordinate + coordinateRest;
+		// Round result
+		geoCoordinate = geoCoordinate * 100000;
+		geoCoordinate = Math.round(geoCoordinate);
+		geoCoordinate = geoCoordinate / 100000;
+		
+		if(coordinateNegative)
+			geoCoordinate = geoCoordinate * -1;
+		
+		return geoCoordinate;
 	}
 	
 	public void createTourSheetMenueBar(XSSFWorkbook wb, XSSFSheet sheet, int index) {
@@ -142,39 +260,92 @@ public class ResultSet {
 		cell.setCellValue(Integer.parseInt(tour.getTourNumber()));
 		
 		cell = row.createCell(1);
-		cell.setCellStyle(formatter.createStandardTableCellStyle(wb));
+		cell.setCellStyle(formatter.createDoubleNumericTableCellStyle(wb));
 		cell.setCellValue(Math.round(getDurationComplete() / 60));
 		
 		cell = row.createCell(2);
-		cell.setCellStyle(formatter.createStandardTableCellStyle(wb));
+		cell.setCellStyle(formatter.createDoubleNumericTableCellStyle(wb));
 		cell.setCellValue(Math.round(getDistanceComplete() / 1000));
-
+		
 		cell = row.createCell(3);
-		cell.setCellStyle(formatter.createStandardTableCellStyle(wb));
-		cell.setCellValue(Math.round(getTimeSaved() / 60));
+		cell.setCellStyle(formatter.createDoubleNumericTableCellStyle(wb));
+		cell.setCellValue(Math.round(getClearenceTimeSaved() / 60));
 
 		cell = row.createCell(4);
-		cell.setCellStyle(formatter.createStandardTableCellStyle(wb));
-		cell.setCellValue(Math.round(getDistanceSaved() / 1000));
+		cell.setCellStyle(formatter.createDoubleNumericTableCellStyle(wb));
+		cell.setCellValue(Math.round(getTimeSaved() / 60));
 
 		cell = row.createCell(5);
-		cell.setCellStyle(formatter.createStandardTableCellStyle(wb));
-		cell.setCellValue(Math.round(getTimeWasted() / 60));
+		cell.setCellStyle(formatter.createDoubleNumericTableCellStyle(wb));
+		cell.setCellValue(Math.round(getDistanceSaved() / 1000));
 
 		cell = row.createCell(6);
-		cell.setCellStyle(formatter.createStandardTableCellStyle(wb));
-		cell.setCellValue(Math.round(getUnnecessaryDistance() / 1000));
-		
+		cell.setCellStyle(formatter.createDoubleNumericTableCellStyle(wb));
+		cell.setCellValue(Math.round(getTimeWasted() / 60));
+
 		cell = row.createCell(7);
-		cell.setCellStyle(formatter.createStandardTableCellStyle(wb));
-		cell.setCellValue(getAmountOfClearanceComplete());
+		cell.setCellStyle(formatter.createDoubleNumericTableCellStyle(wb));
+		cell.setCellValue(Math.round(getUnnecessaryDistance() / 1000));
 		
 		cell = row.createCell(8);
 		cell.setCellStyle(formatter.createStandardTableCellStyle(wb));
-		cell.setCellValue(getAmountOfClearanceSaved());
+		cell.setCellValue(getAmountOfClearanceComplete());
 		
 		cell = row.createCell(9);
 		cell.setCellStyle(formatter.createStandardTableCellStyle(wb));
+		cell.setCellValue(getAmountOfClearanceSaved());
+		
+		cell = row.createCell(10);
+		cell.setCellStyle(formatter.createStandardTableCellStyle(wb));
+		cell.setCellValue(getUnnecessaryCleared());
+	}
+	
+	public void writeAvarageResultSet(XSSFWorkbook wb, XSSFSheet sheet, XSSFRow row) {
+		OutputFormatter formatter = new OutputFormatter();
+		XSSFCell cell;
+		
+		cell = row.createCell(0);
+		cell.setCellStyle(formatter.createSensorCellStyle(wb, true));
+		cell.setCellValue("Avarage");
+		
+		cell = row.createCell(1);
+		cell.setCellStyle(formatter.createSensorCellStyle(wb, true));
+		cell.setCellValue(Math.round(getDurationComplete() / 60));
+		
+		cell = row.createCell(2);
+		cell.setCellStyle(formatter.createSensorCellStyle(wb, true));
+		cell.setCellValue(Math.round(getDistanceComplete() / 1000));
+
+		cell = row.createCell(3);
+		cell.setCellStyle(formatter.createSensorCellStyle(wb, true));
+		cell.setCellValue(Math.round(getClearenceTimeSaved() / 60));
+		
+		cell = row.createCell(4);
+		cell.setCellStyle(formatter.createSensorCellStyle(wb, true));
+		cell.setCellValue(Math.round(getTimeSaved() / 60));
+
+		cell = row.createCell(5);
+		cell.setCellStyle(formatter.createSensorCellStyle(wb, true));
+		cell.setCellValue(Math.round(getDistanceSaved() / 1000));
+
+		cell = row.createCell(6);
+		cell.setCellStyle(formatter.createSensorCellStyle(wb, true));
+		cell.setCellValue(Math.round(getTimeWasted() / 60));
+
+		cell = row.createCell(7);
+		cell.setCellStyle(formatter.createSensorCellStyle(wb, true));
+		cell.setCellValue(Math.round(getUnnecessaryDistance() / 1000));
+		
+		cell = row.createCell(8);
+		cell.setCellStyle(formatter.createSensorCellStyle(wb, true));
+		cell.setCellValue(getAmountOfClearanceComplete());
+		
+		cell = row.createCell(9);
+		cell.setCellStyle(formatter.createSensorCellStyle(wb, true));
+		cell.setCellValue(getAmountOfClearanceSaved());
+		
+		cell = row.createCell(10);
+		cell.setCellStyle(formatter.createSensorCellStyle(wb, true));
 		cell.setCellValue(getUnnecessaryCleared());
 	}
 	
@@ -206,6 +377,15 @@ public class ResultSet {
 		distanceSaved = tour.getEmptyCansWithSensorList().size() * tour.getManager().getSingleDrivingDistance();
 		
 		this.distanceComplete = (distanceComplete - distanceSaved);
+	}
+	
+	private void calculateClearenceTimeSaved()
+	{
+		double timeSaved = 0;
+		
+		timeSaved = tour.getEmptyCansWithSensorList().size() * (tour.getManager().getEmptyingTime());
+		
+		this.clearenceTimeSaved = timeSaved;
 	}
 	
 	private void calculateTimeSaved()
@@ -252,6 +432,32 @@ public class ResultSet {
 		this.timeWasted = timeWasted;
 		this.unnecessaryDistance = unnecessaryDistance;
 	}
+	
+	public void createAvarageResultSet(List<ResultSet> resultSetList) {
+		for(ResultSet resultSet : resultSetList) {
+			this.amountOfClearanceComplete += resultSet.getAmountOfClearanceComplete();
+			this.amountOfClearanceSaved += resultSet.getAmountOfClearanceSaved();
+			this.unnecessaryCleared += resultSet.getUnnecessaryCleared();
+			this.distanceComplete += resultSet.getDistanceComplete();
+			this.distanceSaved += resultSet.getDistanceSaved();
+			this.durationComplete += resultSet.getDurationComplete();
+			this.clearenceTimeSaved += resultSet.getClearenceTimeSaved();
+			this.timeSaved += resultSet.getTimeSaved();
+			this.timeWasted += resultSet.getTimeWasted();
+			this.unnecessaryDistance += resultSet.getUnnecessaryDistance();
+		}
+		
+		this.amountOfClearanceComplete = this.amountOfClearanceComplete / resultSetList.size();
+		this.amountOfClearanceSaved = this.amountOfClearanceSaved / resultSetList.size();
+		this.unnecessaryCleared = this.unnecessaryCleared / resultSetList.size();
+		this.distanceComplete = Math.round((this.distanceComplete / resultSetList.size()));
+		this.distanceSaved = Math.round((this.distanceSaved / resultSetList.size()));
+		this.durationComplete = Math.round((this.durationComplete / resultSetList.size()));
+		this.clearenceTimeSaved = Math.round((this.clearenceTimeSaved / resultSetList.size()));
+		this.timeSaved = Math.round((this.timeSaved / resultSetList.size()));
+		this.timeWasted = Math.round((this.timeWasted / resultSetList.size()));
+		this.unnecessaryDistance = Math.round((this.unnecessaryDistance / resultSetList.size()));
+	}
 
 	
 	//Getters and Setters
@@ -278,6 +484,14 @@ public class ResultSet {
 		this.distanceComplete = distanceComplete;
 	}
 	
+	public double getClearenceTimeSaved() {
+		return clearenceTimeSaved;
+	}
+
+	public void setClearenceTimeSaved(double clearenceTimeSaved) {
+		this.clearenceTimeSaved = clearenceTimeSaved;
+	}
+
 	public double getTimeSaved() {
 		return timeSaved;
 	}

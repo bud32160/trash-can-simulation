@@ -12,6 +12,7 @@ import java.util.List;
 
 import org.apache.poi.xssf.usermodel.XSSFCell;
 import org.apache.poi.xssf.usermodel.XSSFCellStyle;
+import org.apache.poi.xssf.usermodel.XSSFDataFormat;
 import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
@@ -52,34 +53,26 @@ public class ResultSet {
 		calculateAmountOfClearences();
 		calculateUnnecessaryAmounts();
 		createOutputTourFile();
-		createOutputFullCansFile();
+		createOutputTourFileCSV();
+		createOptimizatedTourFile();
 		createOutputTspFile();
 	}
 	
 	private void createOutputTourFile() throws FileNotFoundException {
 		XSSFWorkbook wb = new XSSFWorkbook();
 		String tourNumber = tour.getTourNumber();
-		String location = System.getProperty("user.dir") + "\\output\\ResultTourSheet" + tourNumber + ".xlsx";
+		String location = System.getProperty("user.dir") + "\\output\\TourSheet" + tourNumber + ".xlsx";
 		FileOutputStream outputStream = new FileOutputStream(new File(location));
 		XSSFSheet sheet = wb.createSheet("Tour " + tourNumber);
 		OutputFormatter formatter = new OutputFormatter();
-		
-		
 		formatter.setCollumnWidthTourTable(sheet);
-		XSSFRow headlineRow = sheet.createRow(0);
-		XSSFCell headlineCell = headlineRow.createCell(0);
-		headlineCell.setCellValue("Tour " + tourNumber);
-		headlineCell.setCellStyle(formatter.createHeadlineCellStyle(wb));
 		
-		int menueBarIndex = 2;
-		createTourSheetMenueBar(wb, sheet, menueBarIndex);
-		
-		int start = 3;
-        int count = start;
-        XSSFRow row;    
+		XSSFRow menueBar = sheet.createRow(0);
+		createTourSheetMenueBar(wb, sheet, menueBar);
+		int count = 1;
+        
         for (TrashCan can : tour.getCanList()) {
-        	row = sheet.createRow(count);
-            writeTourResult(wb, row, can);
+            writeTourResult(wb, sheet.createRow(count), can);
             count++;
         }
         
@@ -87,37 +80,28 @@ public class ResultSet {
 			wb.write(outputStream);
 			outputStream.close();
 			wb.close();
-			System.out.println("Successfully written in file!");
+			System.out.println("Successfully written in tour file!");
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
 	
-	public void createOutputFullCansFile() throws FileNotFoundException {
+	private void createOutputTourFileCSV() throws FileNotFoundException {
 		XSSFWorkbook wb = new XSSFWorkbook();
 		String tourNumber = tour.getTourNumber();
-		String location = System.getProperty("user.dir") + "\\output\\FullCansListFile" + tourNumber + ".xlsx";
+		String location = System.getProperty("user.dir") + "\\output\\TourSheet" + tourNumber + ".csv";
 		FileOutputStream outputStream = new FileOutputStream(new File(location));
 		XSSFSheet sheet = wb.createSheet("Tour " + tourNumber);
-		OutputFormatter formatter = new OutputFormatter();
+		//OutputFormatter formatter = new OutputFormatter();
+		//formatter.setCollumnWidthTourTable(sheet);
 		
-		
-		formatter.setCollumnWidthTourTable(sheet);
-		XSSFRow headlineRow = sheet.createRow(0);
-		XSSFCell headlineCell = headlineRow.createCell(0);
-		headlineCell.setCellValue("Tour " + tourNumber);
-		headlineCell.setCellStyle(formatter.createHeadlineCellStyle(wb));
-		
-		int menueBarIndex = 2;
-		createTourSheetMenueBar(wb, sheet, menueBarIndex);
-		
-		int start = 3;
-        int count = start;
-        XSSFRow row;    
-        for (TrashCan can : tour.getFullCansList()) {
-        	row = sheet.createRow(count);
-            writeTourResult(wb, row, can);
+		XSSFRow menueBar = sheet.createRow(0);
+		createCSVTourSheetMenueBar(wb, sheet, menueBar);
+		int count = 1;
+        
+        for (TrashCan can : tour.getCanList()) {
+        	writeCSVTourResult(wb, sheet.createRow(count), can);
             count++;
         }
         
@@ -125,7 +109,36 @@ public class ResultSet {
 			wb.write(outputStream);
 			outputStream.close();
 			wb.close();
-			System.out.println("Successfully written in file!");
+			System.out.println("Successfully written in csv file!");
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+	public void createOptimizatedTourFile() throws FileNotFoundException {
+		XSSFWorkbook wb = new XSSFWorkbook();
+		String tourNumber = tour.getTourNumber();
+		String location = System.getProperty("user.dir") + "\\output\\OptimizatedTourFile" + tourNumber + ".xlsx";
+		FileOutputStream outputStream = new FileOutputStream(new File(location));
+		XSSFSheet sheet = wb.createSheet("Tour " + tourNumber);
+		OutputFormatter formatter = new OutputFormatter();
+		formatter.setCollumnWidthTourTable(sheet);
+		
+		XSSFRow menueBar = sheet.createRow(0);
+		createTourSheetMenueBar(wb, sheet, menueBar);
+		int count = 1;
+		
+        for (TrashCan can : tour.getCansToBeClearedList()) {
+            writeTourResult(wb, sheet.createRow(count), can);
+            count++;
+        }
+        
+        try {
+			wb.write(outputStream);
+			outputStream.close();
+			wb.close();
+			System.out.println("Successfully written in optimizated tour file!");
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -136,6 +149,7 @@ public class ResultSet {
 		String tourNumber = tour.getTourNumber();
 		String location = System.getProperty("user.dir") + "\\output\\Tour" + tourNumber + ".tsp";
 		List<AcoCanFormat> acoCanList = createAcoCanList();
+		AcoCanFormat startPoint = new AcoCanFormat("SP", calculateGeoCoordinate(4899488), calculateGeoCoordinate(1211977));
 		
 		PrintWriter writer = new PrintWriter(location, "UTF-8");
 		writer.println("NAME: " + "Tour" + tour.getTourNumber());
@@ -145,6 +159,7 @@ public class ResultSet {
 		writer.println("EDGE_WEIGHT_TYPE: GEO");
 		writer.println("DISPLAY_DATA_TYPE: COORD_DISPLAY");
 		writer.println("NODE_COORD_SECTION");
+		writer.println(startPoint.getDescription() + " " + startPoint.getLatitude() + " " + startPoint.getLongitude());
 		for(AcoCanFormat acoCan : acoCanList) {
 			writer.println(acoCan.getDescription() + " " + acoCan.getLatitude() + " " + acoCan.getLongitude());
 		}
@@ -157,7 +172,7 @@ public class ResultSet {
 		List<AcoCanFormat> acoCanList = new ArrayList<AcoCanFormat>();
 		EPublicStatus publicStatus = EPublicStatus.PUBLIC;
 		
-		 for (TrashCan can : tour.getFullCansList()) {
+		 for (TrashCan can : tour.getCansToBeClearedList()) {
 			 AcoCanFormat acoCan = new AcoCanFormat();
 			 // Create description for acoCan:  CanNr. + publicStatus
 			 if(can.getPublicStatus().equals(publicStatus))
@@ -203,22 +218,32 @@ public class ResultSet {
 		return geoCoordinate;
 	}
 	
-	public void createTourSheetMenueBar(XSSFWorkbook wb, XSSFSheet sheet, int index) {
+	public void createTourSheetMenueBar(XSSFWorkbook wb, XSSFSheet sheet, XSSFRow row) {
 		OutputFormatter formatter = new OutputFormatter();
-		XSSFRow menue = sheet.createRow(index);
 		XSSFCellStyle menueStyle = formatter.createMenueCellStyle(wb);
-		menue.createCell(0).setCellValue("Can Nr.");
-		menue.createCell(1).setCellValue("Public status");
-		menue.createCell(2).setCellValue("Location");
-		menue.createCell(3).setCellValue("GPS Lat");
-		menue.createCell(4).setCellValue("GPS Long");
-		menue.createCell(5).setCellValue("Filllevel");
-		menue.createCell(6).setCellValue("Sensor");
-		menue.createCell(7).setCellValue("Day");
+		row.createCell(0).setCellValue("Can Nr.");
+		row.createCell(1).setCellValue("Public status");
+		row.createCell(2).setCellValue("Location");
+		row.createCell(3).setCellValue("GPS Lat");
+		row.createCell(4).setCellValue("GPS Long");
+		row.createCell(5).setCellValue("Filllevel");
+		row.createCell(6).setCellValue("Sensor");
+		row.createCell(7).setCellValue("Day");
 		
 		for(int i = 0; i <= 7; i++) {
-			menue.getCell(i).setCellStyle(menueStyle);
+			row.getCell(i).setCellStyle(menueStyle);
 		}
+	}
+	
+	public void createCSVTourSheetMenueBar(XSSFWorkbook wb, XSSFSheet sheet, XSSFRow row) {
+		row.createCell(0).setCellValue("Can Nr.");
+		row.createCell(1).setCellValue("Public status");
+		row.createCell(2).setCellValue("Location");
+		row.createCell(3).setCellValue("GPS Lat");
+		row.createCell(4).setCellValue("GPS Long");
+		row.createCell(5).setCellValue("Filllevel");
+		row.createCell(6).setCellValue("Sensor");
+		row.createCell(7).setCellValue("Day");
 	}
 	
 	public void writeTourResult(XSSFWorkbook wb, XSSFRow row, TrashCan can) {
@@ -249,6 +274,32 @@ public class ResultSet {
 		cell = row.createCell(7);
 		cell.setCellValue(can.getDaySpecification().toString());
 		cell.setCellStyle(standardTableCellStyle);
+	}
+	
+	public void writeCSVTourResult(XSSFWorkbook wb, XSSFRow row, TrashCan can) {
+		XSSFCellStyle gpsDataCellStyle = wb.createCellStyle();
+		String gpsDataCellFormat = "##\".\"#####";
+		XSSFDataFormat dataFormat = wb.createDataFormat();
+		gpsDataCellStyle.setDataFormat(dataFormat.getFormat(gpsDataCellFormat));
+		
+		XSSFCell cell = row.createCell(0);
+		cell.setCellValue(Integer.parseInt(can.getCanNumber()));
+		cell = row.createCell(1);
+		cell.setCellValue(can.getPublicStatus().toString());
+		cell = row.createCell(2);
+		cell.setCellValue(can.getAddress());
+		cell = row.createCell(3);
+		cell.setCellValue(can.getGpsData().getLatitude());
+		cell.setCellStyle(gpsDataCellStyle);
+		cell = row.createCell(4);
+		cell.setCellValue(can.getGpsData().getLongitude());
+		cell.setCellStyle(gpsDataCellStyle);
+		cell = row.createCell(5);
+		cell.setCellValue(can.getFillLevel().toString());
+		cell = row.createCell(6);
+		cell.setCellValue(can.sensorBooleanToString());
+		cell = row.createCell(7);
+		cell.setCellValue(can.getDaySpecification().toString());
 	}
 	
 	public void writeResultSet(XSSFWorkbook wb, XSSFSheet sheet, XSSFRow row) {

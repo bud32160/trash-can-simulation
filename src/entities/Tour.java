@@ -19,7 +19,7 @@ public class Tour {
 	private List<TrashCan> cansWithoutSensorList;
 	private List<TrashCan> cansWithSensorList;
 	private List<TrashCan> emptyCansWithSensorList;
-	private List<TrashCan> fullCansList;
+	private List<TrashCan> cansToBeClearedList;
 	private ResultSet resultSet;
 
 	public Tour()
@@ -155,27 +155,28 @@ public class Tour {
 		List<TrashCan> cansWithoutSensorList = new ArrayList<TrashCan>();
 		List<TrashCan> cansWithSensorList = new ArrayList<TrashCan>();
 		List<TrashCan> emptyCansWithSensorList = new ArrayList<TrashCan>();
-		List<TrashCan> fullCansList = new ArrayList<TrashCan>();
-		EFillLevel emptyLevel = EFillLevel.EMPTY;
+		List<TrashCan> cansToBeClearedList = new ArrayList<TrashCan>();
 		EFillLevel fullLevel = EFillLevel.FULL;
 		EFillLevel overfullLevel = EFillLevel.OVERFULL;
 		TrashCan can = new TrashCan();
 		
 		while (iterator.hasNext()) {
 			can = iterator.next();
-			if(can.getFillLevel().equals(fullLevel) || can.getFillLevel().equals(overfullLevel))
-				fullCansList.add(can);
-			if(can.isSensor() == false)
-				cansWithoutSensorList.add(can);
-			else
-			{
+			
+			if(can.isSensor()) {
 				cansWithSensorList.add(can);
-				if(can.getFillLevel() == emptyLevel)
+				if(can.getFillLevel().equals(fullLevel) || can.getFillLevel().equals(overfullLevel))
+					cansToBeClearedList.add(can);
+				else
 					emptyCansWithSensorList.add(can);
+			}
+			else {
+				cansWithoutSensorList.add(can);
+				cansToBeClearedList.add(can);
 			}
 		}
 		
-		this.fullCansList = fullCansList;
+		this.cansToBeClearedList = cansToBeClearedList;
 		this.cansWithoutSensorList = cansWithoutSensorList;
 		this.cansWithSensorList = cansWithSensorList;
 		this.emptyCansWithSensorList = emptyCansWithSensorList;
@@ -238,12 +239,12 @@ public class Tour {
 		this.emptyCansWithSensorList = emptyCansWithSensorList;
 	}
 
-	public List<TrashCan> getFullCansList() {
-		return fullCansList;
+	public List<TrashCan> getCansToBeClearedList() {
+		return cansToBeClearedList;
 	}
 
-	public void setFullCansList(List<TrashCan> fullCansList) {
-		this.fullCansList = fullCansList;
+	public void setCansToBeClearedList(List<TrashCan> cansToBeClearedList) {
+		this.cansToBeClearedList = cansToBeClearedList;
 	}
 
 	public ResultSet getResultSet() {

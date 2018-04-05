@@ -17,6 +17,8 @@ public class Simulation {
 
 	
 	public static void main(String[] args) throws FileNotFoundException, UnsupportedEncodingException {
+		manager.setCanListFileName(args[0]);
+		manager.setInputFileName(args[1]);
 		
 		try {
 			manager.readDataInput();

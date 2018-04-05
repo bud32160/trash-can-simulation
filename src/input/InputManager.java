@@ -8,6 +8,7 @@ import java.util.List;
 
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.xssf.usermodel.XSSFRow;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
@@ -17,7 +18,9 @@ import enumerations.EDaySpecification;
 import enumerations.EPublicStatus;
 
 public class InputManager {
-
+	
+	private String canListFileName;
+	private String inputFileName;
 	private int numberOfCans;
 	private int numberOfSensors;
 	private double emptyingTime;
@@ -30,7 +33,7 @@ public class InputManager {
 	
 	
 	public void readDataInput() throws IOException{
-		String location = System.getProperty("user.dir") + "\\input\\input_data\\InputData.xlsx";
+		String location = System.getProperty("user.dir") + "\\input\\input_data\\" + this.inputFileName;
 		InputStream inputStream = new FileInputStream(location);
         XSSFWorkbook wb = new XSSFWorkbook(inputStream);
         
@@ -71,28 +74,19 @@ public class InputManager {
 	
 	
 	public List<TrashCan> readTourSheetInput() throws IOException {
-        String location = System.getProperty("user.dir") + "\\input\\can_list\\TourSheet.xlsx";
+        String location = System.getProperty("user.dir") + "\\input\\can_list\\" + this.canListFileName;
         List<TrashCan> canList = new ArrayList<TrashCan>();
-        TrashCan can = new TrashCan();
-	
-        InputStream InputFile = new FileInputStream(location);
-        XSSFWorkbook wb = new XSSFWorkbook(InputFile);
-        int start, end, count;
-            
+        InputStream inputStream = new FileInputStream(location);
+        XSSFWorkbook wb = new XSSFWorkbook(inputStream);
         XSSFSheet sheet = wb.getSheetAt(0);
-        Row row = sheet.getRow(2);
-        Cell cell = row.getCell(1);
-        start = ((int) cell.getNumericCellValue()) - 1;
-        count = start;
-        cell = row.getCell(3);
-        end = ((int) cell.getNumericCellValue()) - 1;
-            
-        while(count <= end)
+        int index = sheet.getFirstRowNum() + 1;
+        XSSFRow row = sheet.getRow(index);
+        
+        while(index <= sheet.getLastRowNum())
         {
-        	row = sheet.getRow(count);
-            can = readTrashCan(row);
-            canList.add(can);
-            count++;
+        	row = sheet.getRow(index);
+            canList.add(readTrashCan(row));
+            index++;
         }
 
         wb.close();
@@ -176,8 +170,23 @@ public class InputManager {
 		return can;
 	}
 	
-	
 	//Getters and Setters
+	public String getCanListFileName() {
+		return canListFileName;
+	}
+
+	public void setCanListFileName(String canListFileName) {
+		this.canListFileName = canListFileName;
+	}
+
+	public String getInputFileName() {
+		return inputFileName;
+	}
+
+	public void setInputFileName(String inputFileName) {
+		this.inputFileName = inputFileName;
+	}
+	
 	public int getNumberOfCans() {
 		return numberOfCans;
 	}

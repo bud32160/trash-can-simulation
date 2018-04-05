@@ -10,6 +10,12 @@ public class AcoCanFormat {
 		
 	}
 	
+	public AcoCanFormat(String description, double latitude, double longitude) {
+		this.description = description;
+		this.latitude = latitude;
+		this.longitude = longitude;
+	}
+	
 	public String getDescription() {
 		return description;
 	}
